@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+  <!-- SEO -->
+  <title>KonkanStay — Discover Beautiful Coastal Stays in Konkan</title>
+  <meta name="description"
+    content="KonkanStay is a premium vacation-stay marketplace for the Konkan coast. Discover villas, beach houses, bungalows and more in Alibaug, Kashid, Tarkarli, Malvan, Dapoli and beyond." />
+  <meta name="keywords"
+    content="Konkan stays, beach house Alibaug, villa Kashid, Tarkarli resort, Malvan homestay, coastal vacation India" />
+  <meta name="author" content="KonkanStay" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="KonkanStay — Escape to Konkan" />
+  <meta property="og:description"
+    content="Discover beautiful stays, peaceful beaches and unforgettable coastal escapes along the Konkan coast." />
+  <meta property="og:type" content="website" />
+
+  <!-- Favicon placeholder -->
+  <link rel="icon" type="image/svg+xml" href="assets/images/konkanstay-mark.svg" />
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+
+<body>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+     NAVBAR
+     ══════════════════════════════════════════════════════════════════════ -->
+  <nav class="navbar nav-transparent" id="navbar" role="navigation" aria-label="Main Navigation">
+    <div class="navbar-inner">
+
+      <!-- Logo -->
+      <a href="#" class="nav-logo" aria-label="KonkanStay Home">
+        <div class="nav-logo-icon"><img src="assets/images/konkanstay-mark.svg" alt="" /></div>
+        <div class="nav-logo-text">
+          <span class="nav-logo-name">KonkanStay</span>
+          <span class="nav-logo-tagline">Coastal Escapes</span>
+        </div>
+      </a>
+
+      <!-- Desktop Nav Links -->
+      <ul class="nav-links" role="list">
+        <li><a href="#destinations" class="nav-link">Explore</a></li>
+        <li><a href="#featured-stays" class="nav-link">Stays</a></li>
+        <li><a href="#destinations" class="nav-link">Destinations</a></li>
+        <li><a href="#why-us" class="nav-link">About</a></li>
+      </ul>
+
+      <!-- Desktop Nav Actions -->
+      <div class="nav-actions" id="nav-actions">
+        <!-- Injected by main.js based on auth state -->
+        <a href="pages/login.html" class="btn-nav-login" id="btn-nav-login">Login</a>
+        <a href="#host-cta" class="btn-nav-host" id="btn-nav-host">List Your Property</a>
+      </div>
+
+      <!-- Mobile Toggle -->
+      <button class="nav-toggle" id="nav-toggle" aria-label="Toggle mobile menu" aria-expanded="false"
+        aria-controls="mobile-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile Nav Overlay -->
+  <div class="mobile-nav" id="mobile-nav" role="dialog" aria-label="Mobile Navigation">
+    <ul class="mobile-nav-links" role="list">
+      <li><a href="#destinations" class="mobile-nav-link">Explore</a></li>
+      <li><a href="#featured-stays" class="mobile-nav-link">Stays</a></li>
+      <li><a href="#destinations" class="mobile-nav-link">Destinations</a></li>
+      <li><a href="#why-us" class="mobile-nav-link">About</a></li>
+    </ul>
+    <div class="mobile-nav-actions" id="mobile-nav-actions">
+      <a href="pages/login.html" class="btn-mobile-full btn-mobile-login" id="btn-mobile-login">Login</a>
+      <a href="#host-cta" class="btn-mobile-full btn-mobile-host">List Your Property</a>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+     HERO SECTION
+     ══════════════════════════════════════════════════════════════════════ -->
+  <section class="hero" id="hero" aria-label="Hero">
+
+    <!--
+    Hero Video — place konkan-hero.mp4 at assets/videos/konkan-hero.mp4
+    The fallback background image will show automatically if no video is found.
+  -->
+    <video class="hero-video" autoplay muted loop playsinline preload="metadata" aria-hidden="true">
+      <source src="assets/videos/konkan-hero.mp4" type="video/mp4" />
+    </video>
+
+    <!-- Fallback background (shows when video file is absent or not supported) -->
+    <div class="hero-bg-fallback" aria-hidden="true"></div>
+
+    <!-- Cinematic gradient overlay -->
+    <div class="hero-overlay" aria-hidden="true"></div>
+
+    <!-- Hero Content -->
+    <div class="hero-content">
+
+      <!-- Badge -->
+      <div class="hero-badge">
+        <span class="hero-badge-dot" aria-hidden="true"></span>
+        Maharashtra's Premier Coastal Stays
+      </div>
+
+      <!-- Main Heading -->
+      <h1 class="hero-heading">
+        Escape to <em>Konkan</em>
+      </h1>
+
+      <!-- Subtext -->
+      <p class="hero-subtext">
+        Discover beautiful stays, peaceful beaches and unforgettable coastal escapes.
+      </p>
+
+      <!-- Search Box -->
+      <form class="hero-search" id="hero-search" role="search" aria-label="Property search" action="pages/search.html" method="GET">
+
+        <div class="search-field" id="search-where-field">
+          <span class="search-field-label">Where</span>
+          <div class="search-field-input">
+            <select id="search-destination" name="destination" aria-label="Search destination" style="width: 100%; border: none; background: transparent; font-family: inherit; font-size: inherit; color: var(--clr-navy); outline: none;">
+              <option value="">Anywhere</option>
+              <option value="Alibaug">Alibaug</option>
+              <option value="Kashid">Kashid</option>
+              <option value="Murud">Murud</option>
+              <option value="Dapoli">Dapoli</option>
+              <option value="Malvan">Malvan</option>
+              <option value="Tarkarli">Tarkarli</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="search-field">
+          <span class="search-field-label">Check-in</span>
+          <div class="search-field-input">
+            <input type="date" id="search-checkin" name="checkin" aria-label="Check-in date" />
+          </div>
+        </div>
+
+        <div class="search-field">
+          <span class="search-field-label">Check-out</span>
+          <div class="search-field-input">
+            <input type="date" id="search-checkout" name="checkout" aria-label="Check-out date" />
+          </div>
+        </div>
+
+        <div class="search-field">
+          <span class="search-field-label">Guests</span>
+          <div class="search-field-input">
+            <input type="number" id="search-guests" name="guests" placeholder="Add guests" min="1" max="20"
+              aria-label="Number of guests" />
+          </div>
+        </div>
+
+        <button type="submit" class="search-btn" id="btn-hero-search" aria-label="Search stays">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+          Search
+        </button>
+      </form>
+
+      <!-- Hero CTA Buttons -->
+      <div class="hero-cta">
+        <a href="#featured-stays" class="btn btn-primary" id="btn-explore-stays">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+          </svg>
+          Explore Stays
+        </a>
+        <a href="#host-cta" class="btn btn-outline-white" id="btn-list-property-hero">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+          List Your Property
+        </a>
+      </div>
+
+    </div>
+
+
+  </section>
+
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+     DESTINATIONS SECTION
+     ══════════════════════════════════════════════════════════════════════ -->
+  <section class="destinations section" id="destinations" aria-labelledby="destinations-heading">
+    <div class="container">
+
+      <header class="section-header reveal">
+        <span class="section-label">Explore Konkan</span>
+        <h2 class="section-title" id="destinations-heading">Coastal Destinations Await</h2>
+        <p class="section-subtitle">From quiet beaches to scenic coastal escapes — find your perfect Konkan escape.</p>
+      </header>
+
+      <div class="destinations-grid">
+
+        <!-- Alibaug — Featured (spans 2 cols) -->
+        <article class="dest-card dest-featured reveal reveal-delay-1" role="article" aria-label="Alibaug destination">
+          <img class="dest-card-img" src="assets/images/destinations/alibaug.avif"
+            alt="Alibaug beach with fishing boats and coconut palms, Maharashtra" loading="lazy" />
+          <div class="dest-card-overlay" aria-hidden="true"></div>
+          <div class="dest-card-content">
+            <p class="dest-card-region">Raigad, Maharashtra</p>
+            <h3 class="dest-card-name">Alibaug</h3>
+            <p class="dest-card-desc">The gateway to Konkan — pristine beaches, historic forts, and lush mango groves
+              await just 2 hours from Mumbai.</p>
+            <span class="dest-card-arrow" aria-label="Explore Alibaug">
+              Explore
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="5" y1="12" x2="19" y2="12" />
+                <polyline points="12 5 19 12 12 19" />
+              </svg>
+            </span>
+          </div>
+        </article>
+
+        <!-- Kashid -->
+        <article class="dest-card reveal reveal-delay-2" role="article" aria-label="Kashid destination">
+          <img class="dest-card-img" src="assets/images/destinations/kashid.jpg"
+            alt="Kashid white sand beach with palm trees and clear blue sea" loading="lazy" />
+          <div class="dest-card-overlay" aria-hidden="true"></div>
+          <div class="dest-card-content">
+            <p class="dest-card-region">Raigad, Maharashtra</p>
+            <h3 class="dest-card-name">Kashid</h3>
+            <p class="dest-card-desc">White sand beaches and clear turquoise waters in a serene coastal haven.</p>
+            <span class="dest-card-arrow" aria-label="Explore Kashid">
+              Explore
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="5" y1="12" x2="19" y2="12" />
+                <polyline points="12 5 19 12 12 19" />
+              </svg>
+            </span>
+          </div>
+        </article>
+
+        <!-- Murud -->
+        <article class="dest-card reveal reveal-delay-3" role="article" aria-label="Murud destination">
+          <img class="dest-card-img" src="assets/images/destinations/murud.jpg"
+            alt="Murud beach with Janjira fort in the Arabian Sea backdrop at golden sunset" loading="lazy" />
+          <div class="dest-card-overlay" aria-hidden="true"></div>
+          <div class="dest-card-content">
+            <p class="dest-card-region">Raigad, Maharashtra</p>
+            <h3 class="dest-card-name">Murud</h3>
+            <p class="dest-card-desc">Iconic Janjira Fort rising from the sea and golden sand beaches at every turn.</p>
+            <span class="dest-card-arrow" aria-label="Explore Murud">
+              Explore
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="5" y1="12" x2="19" y2="12" />
+                <polyline points="12 5 19 12 12 19" />
+              </svg>
+            </span>
+          </div>
+        </article>
+
+        <!-- Dapoli -->
+        <article class="dest-card reveal reveal-delay-4" role="article" aria-label="Dapoli destination">
+          <img class="dest-card-img" src="assets/images/destinations/dapoli.jpg"
+            alt="Dapoli beach cove with lush green hills and turquoise ocean" loading="lazy" />
+          <div class="dest-card-overlay" aria-hidden="true"></div>
+          <div class="dest-card-content">
+            <p class="dest-card-region">Ratnagiri, Maharashtra</p>
+            <h3 class="dest-card-name">Dapoli</h3>
+            <p class="dest-card-desc">Lush green hills meet pristine beaches in this serene coastal retreat.</p>
+            <span class="dest-card-arrow" aria-label="Explore Dapoli">
+              Explore
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="5" y1="12" x2="19" y2="12" />
+                <polyline points="12 5 19 12 12 19" />
+              </svg>
+            </span>
+          </div>
+        </article>
+
+        <!-- Tarkarli -->
+        <article class="dest-card reveal reveal-delay-5" role="article" aria-label="Tarkarli destination">
+          <img class="dest-card-img" src="assets/images/destinations/tarkali.jpg"
+            alt="Tarkarli beach with snorkelers in crystal clear water and coconut palms" loading="lazy" />
+          <div class="dest-card-overlay" aria-hidden="true"></div>
+          <div class="dest-card-content">
+            <p class="dest-card-region">Sindhudurg, Maharashtra</p>
+            <h3 class="dest-card-name">Tarkarli</h3>
+            <p class="dest-card-desc">Crystal-clear waters, coral reefs, and the best snorkelling in Konkan.</p>
+            <span class="dest-card-arrow" aria-label="Explore Tarkarli">
+              Explore
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="5" y1="12" x2="19" y2="12" />
+                <polyline points="12 5 19 12 12 19" />
+              </svg>
+            </span>
+          </div>
+        </article>
+
+        <!-- Malvan -->
+        <article class="dest-card reveal reveal-delay-6" role="article" aria-label="Malvan destination">
+          <img class="dest-card-img" src="assets/images/destinations/malvan.avif"
+            alt="Malvan coastline near Sindhudurg Fort with fishing boats" loading="lazy" />
+          <div class="dest-card-overlay" aria-hidden="true"></div>
+          <div class="dest-card-content">
+            <p class="dest-card-region">Sindhudurg, Maharashtra</p>
+            <h3 class="dest-card-name">Malvan</h3>
+            <p class="dest-card-desc">Sindhudurg Fort, rich Malvani seafood, and vibrant coastal culture await.</p>
+            <span class="dest-card-arrow" aria-label="Explore Malvan">
+              Explore
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="5" y1="12" x2="19" y2="12" />
+      <div class="stays-grid">
+
+        <!-- Stay Card 1 -->
+        <article class="stay-card reveal reveal-delay-1" role="article" aria-label="Sea View Villa, Alibaug">
+          <div class="stay-card-img-wrap">
+            <img class="stay-card-img" src="assets/images/stays/sea-view-villa.jpg" alt="Sea View Villa, Alibaug"
+              loading="lazy" />
+            <span class="stay-badge-verified" aria-label="Verified property">Verified</span>
+            <button class="stay-wishlist" id="wishlist-1" aria-label="Add Sea View Villa to wishlist"
+              aria-pressed="false">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
+              </svg>
+            </button>
+          </div>
+          <div class="stay-card-body">
+            <div class="stay-meta-row">
+              <span class="stay-type-tag">Villa</span>
+              <span class="stay-rating">
+                <span class="stay-rating-star" aria-hidden="true">★</span>
+                4.9 <span class="stay-rating-count">(48)</span>
+              </span>
+            </div>
+            <h3 class="stay-card-name">Sea View Villa</h3>
+            <p class="stay-card-location">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
+                <circle cx="12" cy="10" r="3" />
+              </svg>
+              Alibaug, Maharashtra
+            </p>
+            <p class="stay-capacity">👥 Up to 8 guests</p>
+            <div class="stay-card-footer">
+              <div class="stay-price">
+                <span class="stay-price-amount">₹7,500</span>
+                <span class="stay-price-per">per night</span>
+              </div>
+              <button class="btn-stay-view" id="btn-view-stay-1" aria-label="View Sea View Villa details">View
+                Stay</button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Stay Card 2 -->
+        <article class="stay-card reveal reveal-delay-2" role="article" aria-label="Coastal Escape, Kashid">
+          <div class="stay-card-img-wrap">
+            <img class="stay-card-img" src="assets/images/stays/coastal-escape.jpg" alt="Coastal Escape, Kashid"
+              loading="lazy" />
+            <span class="stay-badge-verified" aria-label="Verified property">Verified</span>
+            <button class="stay-wishlist" id="wishlist-2" aria-label="Add Coastal Escape to wishlist"
+              aria-pressed="false">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
+              </svg>
+            </button>
+          </div>
+          <div class="stay-card-body">
+            <div class="stay-meta-row">
+              <span class="stay-type-tag">Beach House</span>
+              <span class="stay-rating">
+                <span class="stay-rating-star" aria-hidden="true">★</span>
+                4.8 <span class="stay-rating-count">(36)</span>
+              </span>
+            </div>
+            <h3 class="stay-card-name">Coastal Escape</h3>
+            <p class="stay-card-location">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
+                <circle cx="12" cy="10" r="3" />
+              </svg>
+              Kashid, Maharashtra
+            </p>
+            <p class="stay-capacity">👥 Up to 6 guests</p>
+            <div class="stay-card-footer">
+              <div class="stay-price">
+                <span class="stay-price-amount">₹5,500</span>
+                <span class="stay-price-per">per night</span>
+              </div>
+              <button class="btn-stay-view" id="btn-view-stay-2" aria-label="View Coastal Escape details">View
+                Stay</button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Stay Card 3 -->
+        <article class="stay-card reveal reveal-delay-3" role="article" aria-label="Konkan Garden Retreat, Dapoli">
+          <div class="stay-card-img-wrap">
+            <img class="stay-card-img" src="assets/images/stays/konkan-garden-retreat.jpg"
+              alt="Konkan Garden Retreat, Dapoli" loading="lazy" />
+            <span class="stay-badge-verified" aria-label="Verified property">Verified</span>
+            <button class="stay-wishlist" id="wishlist-3" aria-label="Add Konkan Garden Retreat to wishlist"
+              aria-pressed="false">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
+              </svg>
+            </button>
+          </div>
+          <div class="stay-card-body">
+            <div class="stay-meta-row">
+              <span class="stay-type-tag">Farmhouse</span>
+              <span class="stay-rating">
+                <span class="stay-rating-star" aria-hidden="true">★</span>
+                4.7 <span class="stay-rating-count">(22)</span>
+              </span>
+            </div>
+            <h3 class="stay-card-name">Konkan Garden Retreat</h3>
+            <p class="stay-card-location">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
+                <circle cx="12" cy="10" r="3" />
+              </svg>
+              Dapoli, Maharashtra
+            </p>
+            <p class="stay-capacity">👥 Up to 10 guests</p>
+            <div class="stay-card-footer">
+              <div class="stay-price">
+                <span class="stay-price-amount">₹6,800</span>
+                <span class="stay-price-per">per night</span>
+              </div>
+              <button class="btn-stay-view" id="btn-view-stay-3" aria-label="View Konkan Garden Retreat details">View
+                Stay</button>
+            </div>
+          </div>
+        </article>
+
+      </div><!-- /stays-grid -->
+
+      <div class="section-view-all reveal">
+        <a href="#" class="btn btn-outline-navy" id="btn-view-all-stays">View All Stays</a>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+     STAY TYPES SECTION
+     ══════════════════════════════════════════════════════════════════════ -->
+  <section class="stay-types section" id="stay-types" aria-labelledby="stay-types-heading">
+    <div class="container">
+
+      <header class="section-header reveal">
+        <span class="section-label">Browse by Type</span>
+        <h2 class="section-title" id="stay-types-heading">Find Your Perfect Stay</h2>
+        <p class="section-subtitle">Whether it's a romantic villa or a family farmhouse, Konkan has it all.</p>
+      </header>
+
+      <div class="stay-types-grid">
+
+        <article class="type-card reveal reveal-delay-1" role="article" aria-label="Browse Villas">
+          <div class="type-card-img-wrap">
+            <img class="type-card-img" src="assets/images/stay-types/villas.jpg" alt="Villas" loading="lazy" />
+          </div>
+          <p class="type-card-label">Villas</p>
+        </article>
+
+        <article class="type-card reveal reveal-delay-2" role="article" aria-label="Browse Beach Houses">
+          <div class="type-card-img-wrap">
+            <img class="type-card-img" src="assets/images/stay-types/beach-houses.jpg" alt="Beach Houses"
+              loading="lazy" />
+          </div>
+          <p class="type-card-label">Beach Houses</p>
+        </article>
+
+        <article class="type-card reveal reveal-delay-3" role="article" aria-label="Browse Bungalows">
+          <div class="type-card-img-wrap">
+            <img class="type-card-img" src="assets/images/stay-types/bunglows.jpg" alt="Bungalows" loading="lazy" />
+          </div>
+          <p class="type-card-label">Bungalows</p>
+        </article>
+
+        <article class="type-card reveal reveal-delay-4" role="article" aria-label="Browse Cottages">
+          <div class="type-card-img-wrap">
+            <img class="type-card-img" src="assets/images/stay-types/cottages.jpg" alt="Cottages" loading="lazy" />
+          </div>
+          <p class="type-card-label">Cottages</p>
+        </article>
+
+        <article class="type-card reveal reveal-delay-5" role="article" aria-label="Browse Farmhouses">
+          <div class="type-card-img-wrap">
+            <img class="type-card-img" src="assets/images/stay-types/farmhouse.jpg" alt="Farmhouses" loading="lazy" />
+          </div>
+          <p class="type-card-label">Farmhouses</p>
+        </article>
+
+        <article class="type-card reveal reveal-delay-6" role="article" aria-label="Browse Holiday Homes">
+          <div class="type-card-img-wrap">
+            <img class="type-card-img" src="assets/images/stay-types/holiday-homes.jpg" alt="Holiday Homes"
+              loading="lazy" />
+          </div>
+          <p class="type-card-label">Holiday Homes</p>
+        </article>
+
+      </div><!-- /stay-types-grid -->
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+     WHY KONKANSTAY
+     ══════════════════════════════════════════════════════════════════════ -->
+  <section class="why-us section" id="why-us" aria-labelledby="why-us-heading">
+    <div class="container">
+
+      <header class="section-header reveal">
+        <span class="section-label">Our Promise</span>
+        <h2 class="section-title" id="why-us-heading">Why Stay With Us?</h2>
+        <p class="section-subtitle">Everything you need for a perfect Konkan coastal experience.</p>
+      </header>
+
+      <div class="features-grid">
+
+        <div class="feature-card reveal reveal-delay-1">
+          <div class="feature-icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2l8 3v6c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V5l8-3z" />
+              <path d="M9 12l2 2 4-4" />
+            </svg>
+          </div>
+          <h3 class="feature-title">Verified Stays</h3>
+          <p class="feature-desc">Every property is carefully reviewed and verified for quality, cleanliness, and safety
+            before listing.</p>
+        </div>
+
+        <div class="feature-card reveal reveal-delay-2">
+          <div class="feature-icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="9" />
+              <path
+                d="M12 7v10M9.5 9.5c0-1.4 1.2-2.5 2.5-2.5s2.5 1 2.5 2c0 2.5-5 1.5-5 4 0 1 1.1 2 2.5 2s2.5-1.1 2.5-2.5" />
+            </svg>
+          </div>
+          <h3 class="feature-title">Transparent Pricing</h3>
+          <p class="feature-desc">Know exactly what you pay before you book. No hidden charges, no surprises at
+            checkout.</p>
+        </div>
+
+        <div class="feature-card reveal reveal-delay-3">
+          <div class="feature-icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 17c1.5 1.3 3 1.3 4.5 0s3-1.3 4.5 0 3 1.3 4.5 0 3-1.3 4.5 0" />
+              <path d="M2 12c1.5 1.3 3 1.3 4.5 0s3-1.3 4.5 0 3 1.3 4.5 0 3-1.3 4.5 0" />
+              <path d="M12 3c-2 2-3 3.8-3 5.5a3 3 0 006 0C15 6.8 14 5 12 3z" />
+            </svg>
+          </div>
+          <h3 class="feature-title">Coastal Experiences</h3>
+          <p class="feature-desc">Stay close to Konkan's stunning beaches, ancient forts, lush forests and fresh seafood
+            culture.</p>
+        </div>
+
+        <div class="feature-card reveal reveal-delay-4">
+          <div class="feature-icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="17" rx="2" />
+              <path d="M3 9h18M8 2v4M16 2v4" />
+              <path d="M9 15l2 2 4-4" />
+            </svg>
+          </div>
+          <h3 class="feature-title">Easy Booking</h3>
+          <p class="feature-desc">Simple search, instant confirmation and a smooth booking experience — from discovery
+            to check-in.</p>
+        </div>
+
+      </div><!-- /features-grid -->
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+     HOST CTA SECTION
+     ══════════════════════════════════════════════════════════════════════ -->
+  <section class="host-cta section" id="host-cta" aria-labelledby="host-cta-heading">
+
+    <!--
+      Same background video as the hero section — place konkan-hero.mp4 at
+      assets/videos/konkan-hero.mp4. Falls back to a gradient background if
+      the video file is absent or unsupported.
+    -->
+    <video class="host-cta-video" autoplay muted loop playsinline preload="auto" aria-hidden="true">
+      <source src="assets/videos/konkan-hero.mp4" type="video/mp4" />
+    </video>
+
+    <!-- Fallback background (shows when video file is absent or not supported) -->
+    <div class="host-cta-bg-fallback" aria-hidden="true"></div>
+
+    <div class="host-cta-overlay" aria-hidden="true"></div>
+    <div class="container">
+      <div class="host-cta-content reveal">
+        <span class="host-cta-label">For Property Owners</span>
+        <h2 class="host-cta-title" id="host-cta-heading">
+          Have a beautiful property in Konkan?
+        </h2>
+        <p class="host-cta-text">
+          Share your property with travelers looking for their next coastal escape. Join hundreds of Konkan hosts
+          already earning with KonkanStay.
+        </p>
+        <a href="#" class="btn-host-cta" id="btn-list-property-cta" aria-label="List your property on KonkanStay">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+          List Your Property
+        </a>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+     FOOTER
+     ══════════════════════════════════════════════════════════════════════ -->
+  <footer class="footer" id="footer" role="contentinfo">
+    <div class="container">
+
+      <div class="footer-top">
+
+        <!-- Brand Column -->
+        <div class="footer-brand">
+          <div class="footer-logo-row">
+            <div class="footer-logo-icon" aria-hidden="true">🌊</div>
+            <span class="footer-logo-name">KonkanStay</span>
+          </div>
+          <p class="footer-brand-desc">
+            Discover and book the most beautiful coastal stays along the Konkan coast of Maharashtra.
+          </p>
+          <div class="footer-social" role="list" aria-label="Social media links">
+            <a href="#" class="social-btn" role="listitem" aria-label="Follow us on Instagram">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z" />
+                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+              </svg>
+            </a>
+            <a href="#" class="social-btn" role="listitem" aria-label="Follow us on Facebook">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z" />
+              </svg>
+            </a>
+            <a href="#" class="social-btn" role="listitem" aria-label="Follow us on Twitter / X">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="4" y1="4" x2="20" y2="20" />
+                <line x1="20" y1="4" x2="4" y2="20" />
+              </svg>
+            </a>
+            <a href="#" class="social-btn" role="listitem" aria-label="Follow us on YouTube">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="2" y="5" width="20" height="14" rx="4" ry="4" />
+                <polygon points="10 9 15 12 10 15 10 9" fill="currentColor" stroke="none" />
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Quick Links -->
+        <div>
+          <h3 class="footer-col-title">Quick Links</h3>
+          <ul class="footer-links" role="list">
+            <li><a href="#destinations" class="footer-link">Explore</a></li>
+            <li><a href="#featured-stays" class="footer-link">Stays</a></li>
+            <li><a href="#destinations" class="footer-link">Destinations</a></li>
+            <li><a href="#why-us" class="footer-link">About Us</a></li>
+            <li><a href="#host-cta" class="footer-link">List Property</a></li>
+          </ul>
+        </div>
+
+        <!-- Support -->
+        <div>
+          <h3 class="footer-col-title">Support</h3>
+          <ul class="footer-links" role="list">
+            <li><a href="#" class="footer-link">Contact Us</a></li>
+            <li><a href="#" class="footer-link">FAQ</a></li>
+            <li><a href="#" class="footer-link">Help Center</a></li>
+            <li><a href="#" class="footer-link">Safety Info</a></li>
+            <li><a href="#" class="footer-link">Community</a></li>
+          </ul>
+        </div>
+
+        <!-- Legal -->
+        <div>
+          <h3 class="footer-col-title">Legal</h3>
+          <ul class="footer-links" role="list">
+            <li><a href="#" class="footer-link">Privacy Policy</a></li>
+            <li><a href="#" class="footer-link">Terms &amp; Conditions</a></li>
+            <li><a href="#" class="footer-link">Cancellation Policy</a></li>
+            <li><a href="#" class="footer-link">Cookie Policy</a></li>
+          </ul>
+        </div>
+
+      </div><!-- /footer-top -->
+
+      <div class="footer-bottom">
+        <p class="footer-copy">
+          &copy; 2025 <span>KonkanStay</span>. All rights reserved. Made with ❤️ for Konkan.
+        </p>
+        <nav class="footer-legal" aria-label="Legal links">
+          <a href="#">Privacy</a>
+          <a href="#">Terms</a>
+          <a href="#">Cancellation</a>
+        </nav>
+      </div>
+
+    </div>
+  </footer>
+
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+     MODALS
+     ══════════════════════════════════════════════════════════════════════ -->
+  
+  <!-- Property Details Modal -->
+  <div class="modal-overlay" id="public-property-modal">
+    <div class="modal-content" style="max-width: 800px; max-height: 90vh; overflow-y: auto;">
+      <div class="modal-close" id="close-public-property-modal">&times;</div>
+      <div class="prop-modal-header" style="margin-bottom: 1.5rem;">
+        <h2 id="public-detail-title" style="font-family: var(--font-heading); color: var(--clr-navy); font-size: 2rem;">Property Title</h2>
+        <p id="public-detail-loc" style="color: var(--clr-text-mid); font-size: 0.95rem;">Location</p>
+      </div>
+
+      <div class="prop-modal-gallery" id="public-detail-gallery" style="display: flex; gap: 0.5rem; overflow-x: auto; margin-bottom: 1.5rem; height: 250px;">
+        <!-- Images injected here -->
+      </div>
+
+      <div style="display: flex; flex-wrap: wrap; gap: 2rem;">
+        <div style="flex: 2; min-width: 300px;">
+          <h3 style="margin-bottom: 0.5rem; color: var(--clr-navy);">About this stay</h3>
+          <p id="public-detail-desc" style="color: var(--clr-text-mid); line-height: 1.6; margin-bottom: 1.5rem;">Description goes here.</p>
+        </div>
+
+        <div style="flex: 1; min-width: 250px; background: var(--clr-cream); padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid rgba(0,0,0,0.05); height: fit-content;">
+          <div style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; color: var(--clr-navy);">
+            <span id="public-detail-price">₹0</span> <span style="font-size: 0.9rem; font-weight: 400; color: var(--clr-text-mid);">/ night</span>
+          </div>
+          <p style="margin-bottom: 1.5rem; font-size: 0.9rem; color: var(--clr-text-mid);">Maximum <span id="public-detail-guests">0</span> guests allowed.</p>
+          <button class="btn btn-primary btn-block" id="btn-public-book">Book Now</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Booking & Auth Modal -->
+  <div class="modal-overlay" id="public-booking-modal">
+    <div class="modal-content" style="max-width: 500px; max-height: 90vh; overflow-y: auto;">
+      <div class="modal-close" id="close-public-booking-modal">&times;</div>
+      <h2 style="margin-bottom: 0.5rem; font-family: var(--font-heading); color: var(--clr-navy);">Complete Booking</h2>
+      <p style="color: var(--clr-text-mid); margin-bottom: 1.5rem; font-size: 0.95rem;" id="public-booking-prop-title">Property Name</p>
+
+      <form id="public-booking-form" style="display: flex; flex-direction: column; gap: 1rem;">
+        
+        <!-- Dates & Guests -->
+        <div style="display: flex; gap: 1rem;">
+          <div style="flex: 1; display: flex; flex-direction: column;">
+            <label style="font-size: 0.85rem; font-weight: 600; margin-bottom: 0.3rem;">Check-in</label>
+            <input type="date" id="book-checkin" required style="padding: 0.6rem; border: 1px solid #ccc; border-radius: var(--radius-sm);">
+          </div>
+          <div style="flex: 1; display: flex; flex-direction: column;">
+            <label style="font-size: 0.85rem; font-weight: 600; margin-bottom: 0.3rem;">Check-out</label>
+            <input type="date" id="book-checkout" required style="padding: 0.6rem; border: 1px solid #ccc; border-radius: var(--radius-sm);">
+          </div>
+        </div>
+        <div style="display: flex; gap: 1rem;">
+          <div style="flex: 1; display: flex; flex-direction: column;">
+            <label style="font-size: 0.85rem; font-weight: 600; margin-bottom: 0.3rem;">Guests</label>
+            <input type="number" id="book-guests" required min="1" value="2" style="padding: 0.6rem; border: 1px solid #ccc; border-radius: var(--radius-sm);">
+          </div>
+          <div style="flex: 1; display: flex; flex-direction: column;">
+            <label style="font-size: 0.85rem; font-weight: 600; margin-bottom: 0.3rem;">Total Price (₹)</label>
+            <input type="text" id="book-total" readonly style="padding: 0.6rem; border: 1px solid #ccc; border-radius: var(--radius-sm); background: rgba(0,0,0,0.05); font-weight: 600;">
+          </div>
+        </div>
+
+        <div style="border-top: 1px solid #eee; margin: 0.5rem 0;"></div>
+
+        <!-- Auth Section -->
+        <div id="booking-auth-section">
+          <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem; color: var(--clr-navy);">Authentication Required</h3>
+          <p style="font-size: 0.85rem; color: var(--clr-text-mid); margin-bottom: 1rem;">Please log in or register to complete this booking.</p>
+          
+          <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+            <label style="flex: 1; display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+              <input type="radio" name="authMode" value="login" checked> Login
+            </label>
+            <label style="flex: 1; display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+              <input type="radio" name="authMode" value="register"> Register
+            </label>
+          </div>
+
+          <div id="auth-register-fields" style="display: none; flex-direction: column; gap: 1rem; margin-bottom: 1rem;">
+            <input type="text" id="auth-fullname" placeholder="Full Name" style="padding: 0.6rem; border: 1px solid #ccc; border-radius: var(--radius-sm); width: 100%;">
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1rem;">
+            <input type="email" id="auth-email" placeholder="Email Address" required style="padding: 0.6rem; border: 1px solid #ccc; border-radius: var(--radius-sm); width: 100%;">
+            <input type="password" id="auth-password" placeholder="Password" required style="padding: 0.6rem; border: 1px solid #ccc; border-radius: var(--radius-sm); width: 100%;">
+          </div>
+        </div>
+
+        <div style="border-top: 1px solid #eee; margin: 0.5rem 0;"></div>
+
+        <!-- CAPTCHA -->
+        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+          <label style="font-size: 0.85rem; font-weight: 600;">Security Check</label>
+          <div style="display: flex; align-items: center; gap: 1rem;">
+            <div id="captcha-display" style="background: #eee; padding: 0.6rem 1rem; font-family: monospace; font-size: 1.2rem; font-weight: bold; letter-spacing: 2px; border-radius: var(--radius-sm); user-select: none;">
+              4B8Y
+            </div>
+            <input type="text" id="captcha-input" placeholder="Enter code" required style="padding: 0.6rem; border: 1px solid #ccc; border-radius: var(--radius-sm); flex: 1;">
+          </div>
+        </div>
+
+        <div id="booking-alert" style="display: none; padding: 0.8rem; border-radius: var(--radius-sm); font-size: 0.9rem; margin-top: 0.5rem;"></div>
+
+        <button type="submit" class="btn btn-primary btn-block" style="margin-top: 1rem;" id="btn-confirm-booking">Confirm Booking</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+     SCRIPTS
+     ══════════════════════════════════════════════════════════════════════ -->
+  <script type="module" src="assets/js/main.js" defer></script>
+  <script type="module" src="assets/js/public.js" defer></script>
+</body>
+</html>

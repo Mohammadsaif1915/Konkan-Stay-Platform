@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Search Results — KonkanStay</title>
+  <meta name="description" content="Browse and filter 100+ coastal properties across Konkan — villas, beach houses, resorts and more." />
+  <link rel="icon" type="image/svg+xml" href="../assets/images/konkanstay-mark.svg" />
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <style>
+    /* ─── Page Base ─────────────────────────────────────────── */
+    body { background: hsl(220,18%,9%); color: #e8eaf0; }
+
+    /* ─── Topbar Search Strip ───────────────────────────────── */
+    .search-topbar {
+      background: rgba(10,18,35,0.97);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      padding: 1.1rem 0;
+      position: sticky;
+      top: var(--navbar-h);
+      z-index: 90;
+    }
+    .search-topbar-inner {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .stb-field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+      flex: 1;
+      min-width: 110px;
+    }
+    .stb-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.38);
+    }
+    .stb-input, .stb-select {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 10px;
+      padding: 0.55rem 0.85rem;
+      font-size: 0.88rem;
+      color: #fff;
+      font-family: var(--font-body);
+      transition: border-color 0.18s;
+      width: 100%;
+    }
+    .stb-input:focus, .stb-select:focus {
+      outline: none;
+      border-color: hsl(196,62%,42%);
+      background: rgba(255,255,255,0.09);
+    }
+    .stb-select option { background: #0a1223; color: #fff; }
+    .stb-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      background: linear-gradient(135deg, hsl(196,62%,42%), hsl(178,52%,38%));
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 0.7rem 1.5rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      font-family: var(--font-body);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.18s;
+      box-shadow: 0 4px 16px rgba(49,130,182,0.35);
+      flex-shrink: 0;
+    }
+    .stb-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(49,130,182,0.5); }
+
+    /* ─── Page Layout ────────────────────────────────────────── */
+    .search-layout {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 2.5rem 2rem 5rem;
+      display: grid;
+      grid-template-columns: 270px 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    /* ─── Sidebar Filters ───────────────────────────────────── */
+    .filter-sidebar {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 18px;
+      padding: 1.5rem;
+      position: sticky;
+      top: calc(var(--navbar-h) + 80px);
+      max-height: calc(100vh - var(--navbar-h) - 96px);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+    .filter-sidebar h2 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 1.4rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .filter-group { margin-bottom: 1.6rem; }
+    .filter-group-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      margin-bottom: 0.75rem;
+    }
+    .filter-select, .filter-range-val {
+      width: 100%;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 10px;
+      padding: 0.6rem 0.85rem;
+      font-size: 0.875rem;
+      color: #fff;
+      font-family: var(--font-body);
+    }
+    .filter-select:focus { outline: none; border-color: hsl(196,62%,42%); }
+    .filter-select option { background: #0a1223; }
+
+    .price-range-wrap { display: flex; flex-direction: column; gap: 0.6rem; }
+    .price-labels { display: flex; justify-content: space-between; font-size: 0.8rem; color: rgba(255,255,255,0.5); }
+    input[type=range] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 4px;
+      border-radius: 2px;
+      background: linear-gradient(to right, hsl(196,62%,42%) 0%, hsl(196,62%,42%) var(--pct, 70%), rgba(255,255,255,0.15) var(--pct, 70%), rgba(255,255,255,0.15) 100%);
+      outline: none;
+      cursor: pointer;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px; height: 18px;
+      background: hsl(196,62%,42%);
+      border-radius: 50%;
+      border: 3px solid #fff;
+      box-shadow: 0 2px 8px rgba(49,130,182,0.5);
+      cursor: pointer;
+    }
+
+    .amenity-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .amenity-chip {
+      padding: 0.3rem 0.75rem;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: var(--radius-full);
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.6);
+      cursor: pointer;
+      transition: all 0.15s;
+      user-select: none;
+    }
+    .amenity-chip.active {
+      background: rgba(49,130,182,0.22);
+      border-color: hsl(196,62%,42%);
+      color: hsl(196,80%,75%);
+    }
+
+    .btn-clear-filters {
+      width: 100%;
+      padding: 0.6rem;
+      background: rgba(200,50,50,0.12);
+      border: 1px solid rgba(200,50,50,0.25);
+      border-radius: 10px;
+      color: #ff8a8a;
+      font-family: var(--font-body);
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-clear-filters:hover { background: rgba(200,50,50,0.22); }
+
+    /* ─── Results Panel ─────────────────────────────────────── */
+    .results-panel { min-width: 0; }
+    .results-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .results-count {
+      font-size: 0.95rem;
+      color: rgba(255,255,255,0.6);
+    }
+    .results-count strong { color: #fff; font-size: 1.15rem; }
+
+    .sort-select {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 10px;
+      padding: 0.5rem 1rem;
+      font-size: 0.85rem;
+      color: #fff;
+      font-family: var(--font-body);
+      cursor: pointer;
+    }
+    .sort-select:focus { outline: none; border-color: hsl(196,62%,42%); }
+    .sort-select option { background: #0a1223; }
+
+    /* ─── Property Grid ─────────────────────────────────────── */
+    .prop-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    /* ─── Property Card ─────────────────────────────────────── */
+    .prop-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 18px;
+      overflow: hidden;
+      transition: transform 0.22s var(--ease-smooth), box-shadow 0.22s var(--ease-smooth), border-color 0.22s;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+    }
+    .prop-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+      border-color: rgba(49,130,182,0.35);
+    }
+    .prop-card-img-wrap {
+      position: relative;
+      height: 210px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .prop-card-img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s var(--ease-smooth);
+    }
+    .prop-card:hover .prop-card-img { transform: scale(1.06); }
+
+    .prop-card-badge {
+      position: absolute;
+      top: 0.75rem;
+      left: 0.75rem;
+      background: rgba(10,18,35,0.82);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: var(--radius-full);
+      padding: 0.25rem 0.7rem;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: rgba(255,255,255,0.85);
+      letter-spacing: 0.04em;
+    }
+    .prop-card-wishlist {
+      position: absolute;
+      top: 0.75rem;
+      right: 0.75rem;
+      width: 34px; height: 34px;
+      background: rgba(10,18,35,0.72);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      transition: all 0.18s;
+    }
+    .prop-card-wishlist:hover { background: rgba(200,50,50,0.6); border-color: transparent; }
+    .prop-card-wishlist svg { width: 14px; height: 14px; fill: none; stroke: #fff; stroke-width: 2; }
+    .prop-card-wishlist.active svg { fill: #ff6b6b; stroke: #ff6b6b; }
+
+    .prop-card-body {
+      padding: 1rem 1.1rem 1.2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      flex: 1;
+    }
+    .prop-card-location {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.76rem;
+      font-weight: 600;
+      color: hsl(196,70%,62%);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .prop-card-title {
+      font-family: var(--font-heading);
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.3;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .prop-card-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.1rem;
+    }
+    .prop-card-meta span {
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.45);
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    .prop-card-availability {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.45rem;
+      min-height: 1.35rem;
+      font-size: 0.76rem;
+      line-height: 1.4;
+    }
+    .availability-dot {
+      width: 8px;
+      height: 8px;
+      margin-top: 0.27rem;
+      border-radius: 50%;
+      background: currentColor;
+      flex: 0 0 8px;
+    }
+    .prop-card-availability.available { color: #287650; }
+    .prop-card-availability.occupied { color: #a84c34; }
+    .prop-card-availability.unknown { color: var(--clr-text-light); }
+    .prop-amenities {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin-top: 0.25rem;
+    }
+    .prop-amenity-tag {
+      font-size: 0.7rem;
+      padding: 0.18rem 0.55rem;
+      border-radius: var(--radius-full);
+      background: rgba(49,130,182,0.12);
+      border: 1px solid rgba(49,130,182,0.22);
+      color: hsl(196,70%,68%);
+    }
+    .prop-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: auto;
+      padding-top: 0.75rem;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .prop-price { display: flex; flex-direction: column; }
+    .prop-price-amt {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1;
+    }
+    .prop-price-per { font-size: 0.72rem; color: rgba(255,255,255,0.38); margin-top: 0.15rem; }
+    .btn-view {
+      background: linear-gradient(135deg, hsl(196,62%,42%), hsl(178,52%,38%));
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 0.5rem 1.1rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      font-family: var(--font-body);
+      cursor: pointer;
+      transition: all 0.18s;
+      white-space: nowrap;
+    }
+    .btn-view:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(49,130,182,0.4); }
+
+    /* ─── Skeleton Loading ──────────────────────────────────── */
+    .skeleton {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 18px;
+      overflow: hidden;
+      animation: skeleton-pulse 1.6s ease-in-out infinite;
+    }
+    .skeleton-img { height: 210px; background: rgba(255,255,255,0.07); }
+    .skeleton-body { padding: 1rem 1.1rem 1.2rem; display: flex; flex-direction: column; gap: 0.6rem; }
+    .skeleton-line { height: 12px; border-radius: 6px; background: rgba(255,255,255,0.08); }
+    .skeleton-line.short { width: 55%; }
+    .skeleton-line.medium { width: 80%; }
+    @keyframes skeleton-pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+
+    /* ─── Empty State ───────────────────────────────────────── */
+    .empty-state {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 4rem 2rem;
+    }
+    .empty-state-icon { font-size: 3.5rem; margin-bottom: 1rem; }
+    .empty-state h3 { font-size: 1.4rem; color: #fff; margin-bottom: 0.5rem; }
+    .empty-state p { color: rgba(255,255,255,0.45); font-size: 0.95rem; }
+
+    /* ─── Detail Modal ──────────────────────────────────────── */
+    .ks-modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(5,10,20,0.88);
+      backdrop-filter: blur(12px);
+      z-index: 500;
+      display: flex; align-items: center; justify-content: center;
+      padding: 1.5rem;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.22s;
+    }
+    .ks-modal-overlay.active { opacity: 1; pointer-events: all; }
+    .ks-modal {
+      background: hsl(220,30%,12%);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 22px;
+      width: 100%;
+      max-width: 820px;
+      max-height: 90vh;
+      overflow-y: auto;
+      transform: translateY(30px) scale(0.97);
+      transition: transform 0.22s var(--ease-smooth);
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255,255,255,0.12) transparent;
+    }
+    .ks-modal-overlay.active .ks-modal { transform: translateY(0) scale(1); }
+    .ks-modal::-webkit-scrollbar { width: 5px; }
+    .ks-modal::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 3px; }
+
+    .modal-hero { position: relative; height: 280px; overflow: hidden; border-radius: 22px 22px 0 0; flex-shrink: 0; }
+    .modal-hero img { width: 100%; height: 100%; object-fit: cover; }
+    .modal-hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(15,25,45,0.9) 0%, transparent 55%);
+    }
+    .modal-close-btn {
+      position: absolute; top: 1rem; right: 1rem;
+      width: 36px; height: 36px;
+      background: rgba(10,18,35,0.75);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      color: #fff;
+      font-size: 1.1rem;
+      line-height: 1;
+      transition: all 0.18s;
+    }
+    .modal-close-btn:hover { background: rgba(200,50,50,0.6); border-color: transparent; }
+    .modal-hero-info {
+      position: absolute; bottom: 1.25rem; left: 1.5rem; right: 1.5rem;
+    }
+    .modal-location-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: hsl(196,80%,72%);
+      margin-bottom: 0.4rem;
+    }
+    .modal-title {
+      font-family: var(--font-heading);
+      font-size: 1.7rem;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.2;
+    }
+
+    .modal-body { padding: 1.5rem; }
+    .modal-meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .modal-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-size: 0.875rem;
+      color: rgba(255,255,255,0.55);
+    }
+    .modal-meta-item svg { opacity: 0.6; }
+    .modal-meta-item strong { color: #fff; font-weight: 600; }
+
+    .modal-section-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      margin-bottom: 0.75rem;
+    }
+    .modal-desc {
+      font-size: 0.9rem;
+      line-height: 1.75;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 1.5rem;
+    }
+    .modal-amenities {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.75rem;
+    }
+    .modal-amenity {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.4rem 0.9rem;
+      background: rgba(49,130,182,0.12);
+      border: 1px solid rgba(49,130,182,0.22);
+      border-radius: var(--radius-full);
+      font-size: 0.82rem;
+      color: hsl(196,70%,68%);
+    }
+
+    .modal-book-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 1.1rem 1.4rem;
+    }
+    .modal-price { display: flex; flex-direction: column; }
+    .modal-price-amt { font-size: 1.6rem; font-weight: 700; color: #fff; line-height: 1; }
+    .modal-price-per { font-size: 0.78rem; color: rgba(255,255,255,0.4); margin-top: 0.2rem; }
+    .btn-book-now {
+      background: linear-gradient(135deg, hsl(196,62%,42%), hsl(178,52%,38%));
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      padding: 0.85rem 2rem;
+      font-size: 1rem;
+      font-weight: 700;
+      font-family: var(--font-body);
+      cursor: pointer;
+      transition: all 0.18s;
+      box-shadow: 0 6px 24px rgba(49,130,182,0.4);
+      white-space: nowrap;
+    }
+    .btn-book-now:hover { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(49,130,182,0.55); }
+
+    /* ─── Booking Modal ─────────────────────────────────────── */
+    .book-modal {
+      max-width: 540px;
+    }
+    .book-modal-header {
+      padding: 1.5rem 1.5rem 0;
+    }
+    .book-modal-header h2 {
+      font-family: var(--font-heading);
+      font-size: 1.5rem;
+      color: #fff;
+      margin-bottom: 0.3rem;
+    }
+    .book-modal-prop {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.45);
+      margin-bottom: 1.25rem;
+    }
+    .book-form { padding: 0 1.5rem 1.5rem; }
+    .book-row { display: flex; gap: 1rem; margin-bottom: 1rem; }
+    .book-field { flex: 1; display: flex; flex-direction: column; gap: 0.35rem; }
+    .book-label { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: rgba(255,255,255,0.4); }
+    .book-input {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 10px;
+      padding: 0.65rem 0.9rem;
+      font-size: 0.88rem;
+      color: #fff;
+      font-family: var(--font-body);
+      transition: border-color 0.18s;
+    }
+    .book-input:focus { outline: none; border-color: hsl(196,62%,42%); }
+    .book-input:read-only { opacity: 0.6; cursor: default; }
+    .book-divider { height: 1px; background: rgba(255,255,255,0.07); margin: 1rem 0; }
+    .book-total-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.85rem 1rem;
+      background: rgba(49,130,182,0.1);
+      border: 1px solid rgba(49,130,182,0.2);
+      border-radius: 12px;
+      margin-bottom: 1.25rem;
+    }
+    .book-payment-panel {
+      padding: 1rem;
+      margin-bottom: 1rem;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+    }
+    .book-payment-panel h3 { color: #fff; font-size: 0.95rem; margin-bottom: 0.3rem; }
+    .book-payment-panel p { color: rgba(255,255,255,0.55); font-size: 0.82rem; margin-bottom: 0.7rem; }
+    .book-payment-detail { color: rgba(255,255,255,0.72); font-size: 0.82rem; overflow-wrap: anywhere; }
+    .book-payment-detail strong { color: rgba(255,255,255,0.9); }
+    .book-payment-panel .book-field { margin-top: 0.85rem; }
+    .booking-banner {
+      padding: 0.7rem 0.85rem;
+      margin-bottom: 1rem;
+      border-left: 3px solid var(--clr-sunset);
+      background: rgba(228,154,82,0.1);
+      color: #ffd2a3;
+      font-size: 0.8rem;
+      line-height: 1.5;
+    }
+    .book-progress { display: flex; gap: 0.4rem; margin-bottom: 1.25rem; }
+    .book-progress li {
+      flex: 1;
+      padding: 0.55rem 0.25rem;
+      border-bottom: 2px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.42);
+      text-align: center;
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+    .book-progress li[aria-current="step"] { border-color: var(--clr-sea-light); color: #fff; }
+    .booking-step[hidden] { display: none; }
+    .booking-step .book-total-bar { margin-top: 1rem; }
+    .booking-status {
+      min-height: 2.8rem;
+      display: flex;
+      align-items: center;
+      padding: 0.7rem 0.85rem;
+      margin: 0.9rem 0;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      color: rgba(255,255,255,0.7);
+      font-size: 0.84rem;
+    }
+    .booking-status.success { border-color: rgba(110,255,164,0.35); color: #9dffc1; }
+    .booking-status.error { border-color: rgba(255,138,138,0.35); color: #ffaaaa; }
+    .booking-payment-choice { display: flex; gap: 0.65rem; margin: 1rem 0; }
+    .booking-payment-choice label {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem;
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 8px;
+      color: rgba(255,255,255,0.78);
+      font-size: 0.86rem;
+      cursor: pointer;
+    }
+    .booking-payment-choice input { accent-color: var(--clr-sea-light); }
+    .booking-success { padding: 1rem 0 0.25rem; text-align: center; }
+    .booking-success-mark {
+      width: 58px;
+      height: 58px;
+      margin: 0 auto 0.9rem;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: rgba(110,255,164,0.12);
+      border: 1px solid rgba(110,255,164,0.4);
+      color: #8fffb7;
+      font-size: 1.8rem;
+      animation: booking-success 0.45s var(--ease-smooth) both;
+    }
+    .booking-success h3 { color: #fff; margin-bottom: 0.4rem; }
+    .booking-success p { color: rgba(255,255,255,0.58); font-size: 0.85rem; }
+    .booking-confirmation-id { display: block; margin: 0.8rem 0 1rem; color: #fff; font-size: 0.78rem; overflow-wrap: anywhere; }
+    @keyframes booking-success { from { opacity: 0; transform: scale(0.65); } to { opacity: 1; transform: scale(1); } }
+    @media (prefers-reduced-motion: reduce) { .booking-success-mark { animation: none; } }
+    .book-total-label { font-size: 0.85rem; color: rgba(255,255,255,0.55); }
+    .book-total-amt { font-size: 1.25rem; font-weight: 700; color: #fff; }
+    .btn-confirm {
+      width: 100%;
+      background: linear-gradient(135deg, hsl(196,62%,42%), hsl(178,52%,38%));
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      padding: 0.9rem;
+      font-size: 1rem;
+      font-weight: 700;
+      font-family: var(--font-body);
+      cursor: pointer;
+      transition: all 0.18s;
+      box-shadow: 0 6px 24px rgba(49,130,182,0.35);
+    }
+    .btn-confirm:hover { transform: translateY(-1px); box-shadow: 0 10px 32px rgba(49,130,182,0.5); }
+    .btn-confirm:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+    .book-alert {
+      display: none;
+      padding: 0.75rem 1rem;
+      border-radius: 10px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-bottom: 1rem;
+    }
+    .book-alert.success { display: block; background: rgba(46,204,113,0.15); border: 1px solid rgba(46,204,113,0.3); color: #6effa4; }
+    .book-alert.error { display: block; background: rgba(231,76,60,0.15); border: 1px solid rgba(231,76,60,0.3); color: #ff8a8a; }
+
+    /* ─── Login prompt in booking modal ────────────────────── */
+    .book-login-prompt {
+      text-align: center;
+      padding: 1.25rem;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 12px;
+      margin-bottom: 1rem;
+    }
+    .book-login-prompt p { color: rgba(255,255,255,0.55); font-size: 0.88rem; margin-bottom: 0.75rem; }
+    .btn-go-login {
+      display: inline-block;
+      padding: 0.6rem 1.5rem;
+      background: linear-gradient(135deg, hsl(196,62%,42%), hsl(178,52%,38%));
+      color: #fff;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.18s;
+    }
+    .btn-go-login:hover { transform: translateY(-1px); }
+
+    /* ─── Responsive ─────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .search-layout { grid-template-columns: 1fr; }
+      .filter-sidebar { position: static; max-height: none; overflow: visible; }
+      .prop-grid { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+    }
+    @media (max-width: 640px) {
+      .search-topbar-inner { gap: 0.5rem; }
+      .stb-field { min-width: 80px; }
+      .search-layout { padding: 1.5rem 1rem 4rem; }
+      .prop-grid { grid-template-columns: 1fr; }
+      .modal-title { font-size: 1.3rem; }
+      .modal-book-bar { flex-direction: column; align-items: flex-start; }
+      .btn-book-now { width: 100%; }
+      .book-row { flex-direction: column; }
+      .booking-payment-choice { flex-direction: column; }
+    }
+
+    /* Shared KonkanStay coastal palette for the browse surface. */
+    body { background: var(--clr-cream); color: var(--clr-text-dark); }
+    .search-topbar {
+      background: rgba(255,253,247,0.96);
+      border-bottom-color: rgba(23,79,77,0.12);
+      box-shadow: 0 4px 18px rgba(23,45,43,0.06);
+    }
+    .stb-label { color: var(--clr-text-light); }
+    .stb-input, .stb-select, .filter-select, .sort-select {
+      background: var(--clr-white);
+      border-color: rgba(23,79,77,0.18);
+      color: var(--clr-text-dark);
+      color-scheme: light;
+    }
+    .stb-select option, .filter-select option, .sort-select option { background: var(--clr-white); color: var(--clr-text-dark); }
+    .stb-input:focus, .stb-select:focus, .filter-select:focus, .sort-select:focus { border-color: var(--clr-sea); }
+    .filter-sidebar, .prop-card, .skeleton {
+      background: var(--clr-white);
+      border-color: rgba(23,79,77,0.12);
+      box-shadow: var(--shadow-sm);
+    }
+    .filter-sidebar h2, .prop-card-title, .prop-price-amt, .empty-state h3 { color: var(--clr-navy); }
+    .filter-group-title { color: var(--clr-text-light); }
+    .price-labels { color: var(--clr-text-mid); }
+    #price-display { color: var(--clr-navy) !important; }
+    .amenity-chip {
+      background: var(--clr-white);
+      border-color: rgba(23,79,77,0.18);
+      color: var(--clr-text-mid);
+    }
+    .amenity-chip.active {
+      background: hsl(171, 40%, 92%);
+      border-color: var(--clr-teal);
+      color: var(--clr-sea-deep);
+    }
+    .prop-card-location { color: var(--clr-sea-deep); }
+    .prop-card-meta span { color: var(--clr-text-mid); }
+    .prop-amenity-tag {
+      background: hsl(171, 40%, 94%);
+      border-color: hsl(171, 30%, 84%);
+      color: var(--clr-sea-deep);
+    }
+    .prop-card-footer { border-top-color: rgba(23,79,77,0.10); }
+    .prop-price-per, .results-count { color: var(--clr-text-mid); }
+    .results-count strong { color: var(--clr-navy); }
+    .empty-state p { color: var(--clr-text-mid); }
+    .skeleton-img, .skeleton-line { background: rgba(23,79,77,0.08); }
+    .skeleton-line { border-radius: var(--radius-sm); }
+    .booking-fallback-note {
+      padding: 0.75rem 0.9rem;
+      margin: 0 0 1rem;
+      border-left: 3px solid var(--clr-sunset);
+      background: hsl(38, 70%, 94%);
+      color: var(--clr-text-dark);
+      font-size: 0.86rem;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- NAVBAR -->
+  <nav class="navbar nav-scrolled" id="navbar" role="navigation" aria-label="Main Navigation">
+    <div class="navbar-inner">
+      <a href="../index.html" class="nav-logo" aria-label="KonkanStay Home">
+        <div class="nav-logo-icon"><img src="../assets/images/konkanstay-mark.svg" alt="" /></div>
+        <div class="nav-logo-text">
+          <span class="nav-logo-name">KonkanStay</span>
+          <span class="nav-logo-tagline">Coastal Escapes</span>
+        </div>
+      </a>
+      <ul class="nav-links" role="list">
+        <li><a href="../index.html#destinations" class="nav-link">Explore</a></li>
+        <li><a href="../index.html#featured-stays" class="nav-link">Stays</a></li>
+        <li><a href="../index.html#destinations" class="nav-link">Destinations</a></li>
+        <li><a href="../index.html#why-us" class="nav-link">About</a></li>
+      </ul>
+      <div class="nav-actions" id="nav-actions">
+        <a href="login.html" class="btn-nav-login" id="btn-nav-login">Login</a>
+        <a href="../index.html#host-cta" class="btn-nav-host">List Your Property</a>
+      </div>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Toggle mobile menu" aria-expanded="false" aria-controls="mobile-nav">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile Nav -->
+  <div class="mobile-nav" id="mobile-nav" role="dialog" aria-label="Mobile Navigation">
+    <ul class="mobile-nav-links" role="list">
+      <li><a href="../index.html#destinations" class="mobile-nav-link">Explore</a></li>
+      <li><a href="../index.html#featured-stays" class="mobile-nav-link">Stays</a></li>
+      <li><a href="../index.html#destinations" class="mobile-nav-link">Destinations</a></li>
+      <li><a href="../index.html#why-us" class="mobile-nav-link">About</a></li>
+    </ul>
+    <div class="mobile-nav-actions" id="mobile-nav-actions">
+      <a href="login.html" class="btn-mobile-full btn-mobile-login">Login</a>
+      <a href="../index.html#host-cta" class="btn-mobile-full btn-mobile-host">List Your Property</a>
+    </div>
+  </div>
+
+  <!-- TOP SEARCH BAR -->
+  <div class="search-topbar">
+    <form class="search-topbar-inner" id="search-form" role="search" aria-label="Property search">
+      <div class="stb-field">
+        <span class="stb-label">Destination</span>
+        <select class="stb-select" id="search-destination" name="destination">
+          <option value="">Anywhere</option>
+          <option value="Alibaug">Alibaug</option>
+          <option value="Kashid">Kashid</option>
+          <option value="Murud">Murud</option>
+          <option value="Dapoli">Dapoli</option>
+          <option value="Malvan">Malvan</option>
+          <option value="Tarkarli">Tarkarli</option>
+        </select>
+      </div>
+      <div class="stb-field">
+        <span class="stb-label">Check-in</span>
+        <input class="stb-input" type="date" id="search-checkin" name="checkin" />
+      </div>
+      <div class="stb-field">
+        <span class="stb-label">Check-out</span>
+        <input class="stb-input" type="date" id="search-checkout" name="checkout" />
+      </div>
+      <div class="stb-field" style="max-width:110px;">
+        <span class="stb-label">Guests</span>
+        <input class="stb-input" type="number" id="search-guests" name="guests" placeholder="Any" min="1" max="20" />
+      </div>
+      <button type="submit" class="stb-btn" id="btn-search">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Search
+      </button>
+    </form>
+  </div>
+
+  <!-- MAIN LAYOUT -->
+  <div class="search-layout">
+
+    <!-- SIDEBAR FILTERS -->
+    <aside class="filter-sidebar" id="filter-sidebar" aria-label="Filters">
+      <h2>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+        Filters
+      </h2>
+
+      <div class="filter-group">
+        <div class="filter-group-title">Property Type</div>
+        <select class="filter-select" id="filter-type">
+          <option value="">All Types</option>
+          <option value="Villa">Villa</option>
+          <option value="Beach House">Beach House</option>
+          <option value="Resort">Resort</option>
+          <option value="Farmhouse">Farmhouse</option>
+          <option value="Bungalow">Bungalow</option>
+          <option value="Cottage">Cottage</option>
+          <option value="Homestay">Homestay</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <div class="filter-group-title">Max Price per Night</div>
+        <div class="price-range-wrap">
+          <input type="range" id="filter-price" min="1500" max="17000" step="500" value="17000" />
+          <div class="price-labels">
+            <span>₹1,500</span>
+            <span id="price-display" style="color:#fff;font-weight:600;">Any</span>
+            <span>₹17,000</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <div class="filter-group-title">Minimum Guests</div>
+        <select class="filter-select" id="filter-guests">
+          <option value="0">Any</option>
+          <option value="2">2+</option>
+          <option value="4">4+</option>
+          <option value="6">6+</option>
+          <option value="8">8+</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <div class="filter-group-title">Amenities</div>
+        <div class="amenity-chips" id="amenity-chips">
+          <button type="button" class="amenity-chip" data-amenity="WiFi" aria-pressed="false">📶 WiFi</button>
+          <button type="button" class="amenity-chip" data-amenity="Pool" aria-pressed="false">🏊 Pool</button>
+          <button type="button" class="amenity-chip" data-amenity="Beach Access" aria-pressed="false">🏖️ Beach</button>
+          <button type="button" class="amenity-chip" data-amenity="AC" aria-pressed="false">❄️ AC</button>
+          <button type="button" class="amenity-chip" data-amenity="Kitchen" aria-pressed="false">🍳 Kitchen</button>
+          <button type="button" class="amenity-chip" data-amenity="BBQ Grill" aria-pressed="false">🔥 BBQ</button>
+          <button type="button" class="amenity-chip" data-amenity="Sea View" aria-pressed="false">🌊 Sea View</button>
+          <button type="button" class="amenity-chip" data-amenity="Pet Friendly" aria-pressed="false">🐾 Pets OK</button>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <div class="filter-group-title">Sort By</div>
+        <select class="filter-select" id="filter-sort">
+          <option value="default">Newest First</option>
+          <option value="price-asc">Price: Low → High</option>
+          <option value="price-desc">Price: High → Low</option>
+          <option value="guests-desc">Capacity: Most First</option>
+        </select>
+      </div>
+
+      <button class="btn-clear-filters" id="btn-clear-filters">✕ Clear All Filters</button>
+    </aside>
+
+    <!-- RESULTS PANEL -->
+    <main class="results-panel" id="results-panel">
+      <div class="results-header">
+        <div class="results-count" id="results-count">
+          <strong id="results-number">—</strong> properties found
+        </div>
+      </div>
+
+      <!-- Property Grid -->
+      <div class="prop-grid" id="prop-grid">
+        <!-- Skeleton placeholders -->
+        <div class="skeleton"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line medium"></div><div class="skeleton-line short"></div><div class="skeleton-line medium"></div></div></div>
+        <div class="skeleton"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line medium"></div><div class="skeleton-line short"></div><div class="skeleton-line medium"></div></div></div>
+        <div class="skeleton"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line medium"></div><div class="skeleton-line short"></div><div class="skeleton-line medium"></div></div></div>
+        <div class="skeleton"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line medium"></div><div class="skeleton-line short"></div><div class="skeleton-line medium"></div></div></div>
+        <div class="skeleton"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line medium"></div><div class="skeleton-line short"></div><div class="skeleton-line medium"></div></div></div>
+        <div class="skeleton"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line medium"></div><div class="skeleton-line short"></div><div class="skeleton-line medium"></div></div></div>
+      </div>
+    </main>
+  </div>
+
+  <!-- PROPERTY DETAIL MODAL -->
+  <div class="ks-modal-overlay" id="detail-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title-text">
+    <div class="ks-modal" id="detail-modal-inner">
+      <div class="modal-hero">
+        <img id="modal-img" src="" alt="Property" loading="lazy" />
+        <div class="modal-hero-overlay"></div>
+        <button class="modal-close-btn" id="close-detail-modal" aria-label="Close">✕</button>
+        <div class="modal-hero-info">
+          <div class="modal-location-tag">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span id="modal-location">Konkan Coast</span>
+          </div>
+          <h2 class="modal-title" id="modal-title-text">Property Name</h2>
+        </div>
+      </div>
+      <div class="modal-body">
+        <div class="modal-meta-row" id="modal-meta-row">
+          <!-- Filled by JS -->
+        </div>
+        <div class="modal-section-title">About this stay</div>
+        <p class="modal-desc" id="modal-desc">Description</p>
+        <div class="modal-section-title">Amenities</div>
+        <div class="modal-amenities" id="modal-amenities"></div>
+        <div class="modal-book-bar">
+          <div class="modal-price">
+            <span class="modal-price-amt" id="modal-price">₹0</span>
+            <span class="modal-price-per">per night</span>
+          </div>
+          <button class="btn-book-now" id="btn-open-booking">Reserve Now</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOOKING MODAL -->
+  <div class="ks-modal-overlay" id="booking-modal" role="dialog" aria-modal="true" aria-label="Complete Booking">
+    <div class="ks-modal book-modal">
+      <div class="book-modal-header">
+        <button class="modal-close-btn" id="close-booking-modal" aria-label="Close" style="position:static;margin-left:auto;display:flex;margin-bottom:1rem;">✕</button>
+        <h2>Reserve Your Stay</h2>
+        <p class="book-modal-prop" id="book-prop-name">Property Name</p>
+      </div>
+      <div class="book-form">
+        
+        <div id="book-auth-prompt" class="book-login-prompt" style="display:none;">
+          <p>Sign in to check dates and continue with this booking booking.</p>
+          <a href="login.html" class="btn-go-login">Sign In to KonkanStay</a>
+        </div>
+        <div id="book-total-wrap">
+          <ol class="book-progress" aria-label="Booking steps">
+            <li data-booking-progress="dates" aria-current="step">Dates</li>
+            <li data-booking-progress="payment">Payment</li>
+            <li data-booking-progress="verify">Verify</li>
+            <li data-booking-progress="confirmed">Done</li>
+          </ol>
+          <div id="booking-dates-step" class="booking-step">
+            <div class="book-row">
+              <div class="book-field">
+                <label class="book-label" for="book-checkin">Check-in</label>
+                <input class="book-input" type="date" id="book-checkin" required />
+              </div>
+              <div class="book-field">
+                <label class="book-label" for="book-checkout">Check-out</label>
+                <input class="book-input" type="date" id="book-checkout" required />
+              </div>
+            </div>
+            <div class="book-row">
+              <div class="book-field">
+                <label class="book-label" for="book-guests">Guests</label>
+                <input class="book-input" type="number" id="book-guests" min="1" value="2" required />
+              </div>
+              <div class="book-field">
+                <label class="book-label" for="book-nights">Nights</label>
+                <input class="book-input" type="text" id="book-nights" readonly placeholder="—" />
+              </div>
+            </div>
+            <div class="book-total-bar">
+              <span class="book-total-label">booking total · no charge</span>
+              <span class="book-total-amt" id="book-total">₹—</span>
+            </div>
+            <div id="booking-availability-status" class="booking-status" role="status" aria-live="polite">Choose your dates to check this browser's booking calendar.</div>
+            <button type="button" class="btn-confirm" id="btn-check-availability">Check availability</button>
+          </div>
+          <section id="booking-payment-step" class="booking-step" hidden>
+            <h3 style="color:#fff;margin-bottom:.35rem;">booking payment</h3>
+            <p class="book-modal-prop">Choose a test method. No card or bank details are collected.</p>
+            <div class="book-total-bar">
+              <span class="book-total-label" id="booking-payment-summary">Stay total</span>
+              <span class="book-total-amt" id="booking-payment-total">₹—</span>
+            </div>
+            <div class="booking-payment-choice" role="radiogroup" aria-label="booking payment method">
+              <label><input type="radio" name="booking-payment-method" value="UPI" checked /> UPI test</label>
+              <label><input type="radio" name="booking-payment-method" value="Card" /> Card test</label>
+            </div>
+            <button type="button" class="btn-confirm" id="btn-booking-payment">Submit Payment</button>
+            <button type="button" class="btn-view" id="btn-booking-payment-fail" style="width:100%;margin-top:.6rem;">Cancel Payment</button>
+          </section>
+          <section id="booking-verify-step" class="booking-step" hidden>
+            <h3 style="color:#fff;margin-bottom:.35rem;">Confirm it’s you</h3>
+            <p class="book-modal-prop">The username is from your profile. Firebase checks your password; KonkanStay does not store it.</p>
+            <div class="book-field">
+              <label class="book-label" for="booking-username">Username</label>
+              <input class="book-input" type="text" id="booking-username" readonly />
+            </div>
+            <div class="book-field" style="margin-top:.85rem;">
+              <label class="book-label" for="booking-password">Account password</label>
+              <input class="book-input" type="password" id="booking-password" autocomplete="current-password" required />
+            </div>
+            <div class="book-field" style="margin-top:.85rem;">
+              <label class="book-label" id="booking-captcha-prompt" for="booking-captcha-answer">booking CAPTCHA</label>
+              <input class="book-input" type="text" id="booking-captcha-answer" inputmode="numeric" autocomplete="off" required />
+            </div>
+            <div id="booking-attempts" class="book-modal-prop" aria-live="polite">Password attempts remaining: 3</div>
+            <button type="button" class="btn-confirm" id="btn-verify-booking">Verify and confirm booking booking</button>
+          </section>
+          <section id="booking-confirmed-step" class="booking-step" hidden>
+            <div class="booking-success">
+              <div class="booking-success-mark" aria-hidden="true">✓</div>
+              <h3>booking booking confirmed</h3>
+              <p>No payment was taken. This booking reservation is saved only in this browser.</p>
+              <span class="booking-confirmation-id" id="booking-confirmation-id"></span>
+              <button type="button" class="btn-confirm" id="btn-booking-confirmation-pdf">Print booking confirmation</button>
+              <button type="button" class="btn-view" id="btn-close-booking-confirmation" style="width:100%;margin-top:.6rem;">Done</button>
+            </div>
+          </section>
+          <div id="book-alert" class="book-alert" role="alert"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer" id="footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <p class="footer-copy">© 2025 KonkanStay. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="../assets/js/main.js"></script>
+  <script type="module" src="../assets/js/public.js"></script>
+</body>
+</html>

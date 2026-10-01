@@ -1,0 +1,185 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isHost() {
+      let userPath = /databases/$(database)/documents/users/$(request.auth.uid);
+      return signedIn() && exists(userPath) && get(userPath).data.userType == 'host';
+    }
+
+    function isCustomer() {
+      let userPath = /databases/$(database)/documents/users/$(request.auth.uid);
+      return signedIn() && exists(userPath) && get(userPath).data.userType == 'customer';
+    }
+
+    function ownsProperty(propertyId) {
+      let propertyPath = /databases/$(database)/documents/properties/$(propertyId);
+      return signedIn() && exists(propertyPath)
+        && get(propertyPath).data.hostEmail == request.auth.token.email;
+    }
+
+    function ownsPropertyAfter(propertyId) {
+      let propertyPath = /databases/$(database)/documents/properties/$(propertyId);
+      return signedIn()
+        && getAfter(propertyPath).data.hostEmail == request.auth.token.email;
+    }
+
+    function isPublicProperty() {
+      return resource.data.isPublic == true
+        && !resource.data.keys().hasAny([
+          'hostName', 'hostPhone', 'upiId', 'bankAcc', 'bankIfsc', 'qrCode', 'aadhar', 'pan'
+        ]);
+    }
+
+      function confirmsAvailabilityNight(propertyId, date, bookingId) {
+        let bookingPath = /databases/$(database)/documents/bookings/$(bookingId);
+        return existsAfter(bookingPath)
+          && getAfter(bookingPath).data.status == 'Confirmed'
+          && getAfter(bookingPath).data.propId == propertyId
+          && getAfter(bookingPath).data.hostEmail == request.auth.token.email
+          && getAfter(bookingPath).data.checkin <= date
+          && getAfter(bookingPath).data.checkout > date;
+      }
+
+    match /users/{userId} {
+      allow get: if signedIn() && request.auth.uid == userId;
+      allow list: if false;
+      allow create: if signedIn() && request.auth.uid == userId
+        && request.resource.data.keys().hasOnly([
+          'uid', 'email', 'userType', 'username', 'fullname', 'phone', 'surveyNo', 'createdAt'
+        ])
+        && request.resource.data.keys().hasAll(['uid', 'email', 'userType', 'createdAt'])
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.email == request.auth.token.email
+        && request.resource.data.userType in ['customer', 'host'];
+      allow update, delete: if false;
+    }
+
+    match /properties/{propertyId} {
+      allow get: if isPublicProperty() || ownsProperty(propertyId);
+      allow list: if isPublicProperty();
+      allow create: if isHost()
+        && request.resource.data.hostEmail == request.auth.token.email
+        && request.resource.data.isPublic == true
+        && request.resource.data.keys().hasOnly([
+          'title', 'location', 'type', 'price', 'guests', 'description', 'hostEmail',
+          'images', 'image', 'amenities', 'lat', 'lng', 'createdAt', 'isPublic'
+        ])
+        && request.resource.data.keys().hasAll([
+          'title', 'location', 'price', 'guests', 'description', 'hostEmail', 'createdAt'
+        ])
+        && request.resource.data.title is string
+        && request.resource.data.location is string
+        && request.resource.data.price is int && request.resource.data.price > 0
+        && request.resource.data.guests is int && request.resource.data.guests > 0
+        && request.resource.data.description is string;
+      allow update: if ownsProperty(propertyId)
+        && request.resource.data.hostEmail == resource.data.hostEmail
+        && request.resource.data.isPublic == resource.data.isPublic
+        && request.resource.data.isPublic == true
+        && request.resource.data.keys().hasOnly([
+          'title', 'location', 'type', 'price', 'guests', 'description', 'hostEmail',
+          'images', 'image', 'amenities', 'lat', 'lng', 'createdAt', 'isPublic'
+        ]);
+      allow delete: if ownsProperty(propertyId);
+    }
+
+    match /propertyPrivateDetails/{propertyId} {
+      allow get: if isCustomer() || ownsProperty(propertyId);
+      allow list: if false;
+      allow create, update: if ownsPropertyAfter(propertyId)
+        && request.resource.data.hostEmail == request.auth.token.email
+        && request.resource.data.keys().hasOnly([
+          'hostEmail', 'hostName', 'hostPhone', 'upiId', 'bankAcc', 'bankIfsc', 'qrCode'
+        ]);
+      allow delete: if ownsProperty(propertyId);
+    }
+
+    match /properties/{propertyId}/availability/{date} {
+      allow get: if resource == null || resource.data.isPublic == true;
+      allow list: if resource.data.isPublic == true;
+      allow create: if isHost()
+        && ownsProperty(propertyId)
+        && request.resource.data.keys().hasOnly(['bookingId', 'date', 'isPublic', 'occupied', 'createdAt'])
+        && request.resource.data.keys().hasAll(['bookingId', 'date', 'isPublic', 'occupied', 'createdAt'])
+        && request.resource.data.bookingId is string
+        && request.resource.data.date == date
+        && date.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
+        && request.resource.data.isPublic == true
+        && request.resource.data.occupied == true
+        && confirmsAvailabilityNight(propertyId, date, request.resource.data.bookingId);
+      allow update, delete: if false;
+    }
+
+    match /bookings/{bookingId} {
+      allow create: if isCustomer()
+        && request.resource.data.keys().hasOnly([
+          'propId', 'propTitle', 'propLocation', 'hostEmail', 'customerEmail', 'customerName',
+          'checkin', 'checkout', 'guests', 'nights', 'totalPrice', 'txnId', 'status', 'createdAt'
+        ])
+        && request.resource.data.keys().hasAll([
+          'propId', 'propTitle', 'propLocation', 'hostEmail', 'customerEmail', 'checkin',
+          'checkout', 'guests', 'nights', 'totalPrice', 'status', 'createdAt'
+        ])
+        && request.resource.data.customerEmail == request.auth.token.email
+        && request.resource.data.status == 'Pending verification'
+        && 'txnId' in request.resource.data
+        && request.resource.data.txnId is string
+        && request.resource.data.txnId.matches('.*[A-Za-z0-9].*')
+        && request.resource.data.checkin is string
+        && request.resource.data.checkin.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
+        && request.resource.data.checkout is string
+        && request.resource.data.checkout.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
+        && request.resource.data.checkin < request.resource.data.checkout
+        && request.resource.data.guests is int && request.resource.data.guests > 0
+        && request.resource.data.nights is int && request.resource.data.nights > 0
+        && request.resource.data.totalPrice is int && request.resource.data.totalPrice > 0
+        && request.resource.data.createdAt is string
+        && (!('txnId' in request.resource.data)
+          || (request.resource.data.txnId is string && request.resource.data.txnId.size() <= 100))
+        && exists(/databases/$(database)/documents/properties/$(request.resource.data.propId))
+        && get(
+          /databases/$(database)/documents/properties/$(request.resource.data.propId)
+        ).data.isPublic == true
+        && request.resource.data.hostEmail == get(
+          /databases/$(database)/documents/properties/$(request.resource.data.propId)
+        ).data.hostEmail
+        && request.resource.data.propTitle == get(
+          /databases/$(database)/documents/properties/$(request.resource.data.propId)
+        ).data.title
+        && request.resource.data.propLocation == get(
+          /databases/$(database)/documents/properties/$(request.resource.data.propId)
+        ).data.location
+        && request.resource.data.guests <= get(
+          /databases/$(database)/documents/properties/$(request.resource.data.propId)
+        ).data.guests
+        && request.resource.data.totalPrice == get(
+          /databases/$(database)/documents/properties/$(request.resource.data.propId)
+        ).data.price * request.resource.data.nights;
+      allow read: if signedIn() && (
+        resource.data.customerEmail == request.auth.token.email ||
+        resource.data.hostEmail == request.auth.token.email
+      );
+      allow update: if signedIn()
+        && resource.data.hostEmail == request.auth.token.email
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status'])
+        && (
+          (resource.data.status == 'Pending verification'
+            && 'txnId' in resource.data
+            && resource.data.txnId is string
+            && resource.data.txnId.matches('.*[A-Za-z0-9].*')
+            && request.resource.data.status in ['Confirmed', 'Declined']
+            && (request.resource.data.status == 'Declined'
+              || confirmsAvailabilityNight(resource.data.propId, resource.data.checkin, bookingId)))
+          || (resource.data.status == 'Confirmed' && request.resource.data.status == 'Checked in')
+          || (resource.data.status == 'Checked in' && request.resource.data.status == 'Completed')
+        );
+      allow delete: if false;
+    }
+  }
+}

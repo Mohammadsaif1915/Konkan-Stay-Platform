@@ -1,0 +1,28 @@
+{
+  "name": "konkan-stay-platform",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "test": "node --test tests/bookingUtils.test.mjs",
+    "test:rules": "firebase emulators:exec --only firestore --project demo-konkanstay \"node --test tests/firestore.rules.test.mjs\"",
+    "check:firebase": "node --env-file=.env test-firebase.mjs",
+    "seed:properties": "node --env-file=.env seed_properties.mjs",
+    "migrate:property-details": "node --env-file=.env scripts/migrateLegacyPropertyDetails.mjs",
+    "migrate:booking-availability": "node --env-file=.env scripts/migrateConfirmedBookingAvailability.mjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "firebase": "^12.19.0",
+    "vite": "^8.3.1"
+  },
+  "devDependencies": {
+    "@firebase/rules-unit-testing": "^5.0.2",
+    "firebase-admin": "^14.5.0",
+    "firebase-tools": "^15.32.0"
+  }
+}

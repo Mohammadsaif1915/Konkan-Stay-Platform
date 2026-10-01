@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.kilo/
+.env
+.env.*
+!.env.example
+*service-account*.json
+serviceAccount*.json
+*adminsdk*.json
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+.firebase/
+npm-debug.log*

@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Login — KonkanStay</title>
+  <meta name="description" content="Login to your KonkanStay account to book coastal stays or manage your property." />
+
+  <link rel="icon" type="image/svg+xml" href="../assets/images/konkanstay-mark.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Playfair+Display:wght@700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/style.css" />
+
+  <style>
+    /* ── Auth page base ── */
+    html, body { height: 100%; overflow: hidden; }
+
+    .auth-scene {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+    }
+
+    /* Video / fallback bg */
+    .auth-video {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
+
+    .auth-scene-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        135deg,
+        rgba(8, 15, 30, 0.72) 0%,
+        rgba(10, 30, 55, 0.58) 50%,
+        rgba(5, 20, 40, 0.80) 100%
+      );
+    }
+
+    /* ── Navbar ── */
+    .auth-navbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 0 2rem;
+      height: var(--navbar-h);
+      display: flex;
+      align-items: center;
+      background: rgba(10, 18, 36, 0.25);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .auth-nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      text-decoration: none;
+    }
+
+    .auth-nav-logo-icon {
+      width: 36px;
+      height: 36px;
+      filter: drop-shadow(0 2px 8px rgba(0,0,0,0.4));
+    }
+
+    .auth-nav-logo-name {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: white;
+      letter-spacing: 0.02em;
+    }
+
+    .auth-nav-logo-tagline {
+      display: block;
+      font-size: 0.6rem;
+      font-weight: 400;
+      color: rgba(255,255,255,0.55);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      line-height: 1;
+    }
+
+    /* ── Scroll container ── */
+    .auth-scroll {
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      overflow-y: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: calc(var(--navbar-h) + 2rem) 1.5rem 3rem;
+    }
+
+    /* ── Form card ── */
+    .auth-card {
+      width: 100%;
+      max-width: 460px;
+      background: rgba(255, 255, 255, 0.07);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: var(--radius-xl);
+      padding: 2.5rem 2.5rem 2rem;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.40), 0 4px 16px rgba(0,0,0,0.20);
+      animation: card-in 0.55s var(--ease-smooth) both;
+    }
+
+    @keyframes card-in {
+      from { opacity: 0; transform: translateY(28px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0)   scale(1); }
+    }
+
+    .auth-card-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(49, 130, 182, 0.20);
+      border: 1px solid rgba(49, 130, 182, 0.35);
+      color: hsl(196, 80%, 75%);
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.3rem 0.75rem;
+      border-radius: var(--radius-full);
+      margin-bottom: 1rem;
+    }
+
+    .auth-card h1 {
+      font-family: var(--font-heading);
+      font-size: 2rem;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 0.3rem;
+      line-height: 1.2;
+    }
+
+    .auth-card-subtitle {
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.55);
+      margin-bottom: 2rem;
+    }
+
+    /* ── Form groups ── */
+    .auth-form { display: flex; flex-direction: column; gap: 1.1rem; }
+
+    .field-group { display: flex; flex-direction: column; gap: 0.4rem; }
+
+    .field-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: rgba(255,255,255,0.70);
+      letter-spacing: 0.04em;
+    }
+
+    .field-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .field-icon {
+      position: absolute;
+      left: 0.9rem;
+      color: rgba(255,255,255,0.40);
+      display: flex;
+      pointer-events: none;
+    }
+
+    .field-input {
+      width: 100%;
+      padding: 0.82rem 1rem 0.82rem 2.6rem;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: var(--radius-md);
+      color: white;
+      font-size: 0.95rem;
+      font-family: var(--font-body);
+      transition: all var(--transition-fast);
+    }
+
+    .field-input::placeholder { color: rgba(255,255,255,0.30); }
+
+    .field-input:focus {
+      outline: none;
+      background: rgba(255,255,255,0.12);
+      border-color: hsl(196, 62%, 55%);
+      box-shadow: 0 0 0 3px rgba(49, 130, 182, 0.25);
+    }
+
+    /* Toggle password visibility */
+    .field-eye {
+      position: absolute;
+      right: 0.9rem;
+      color: rgba(255,255,255,0.35);
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 0;
+      display: flex;
+      transition: color var(--transition-fast);
+    }
+    .field-eye:hover { color: rgba(255,255,255,0.70); }
+
+    /* ── Alert ── */
+    .auth-alert {
+      display: none;
+      padding: 0.85rem 1rem;
+      border-radius: var(--radius-md);
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    .auth-alert.success {
+      display: block;
+      background: rgba(46, 204, 113, 0.15);
+      border: 1px solid rgba(46, 204, 113, 0.3);
+      color: #6effa4;
+    }
+
+    .auth-alert.error {
+      display: block;
+      background: rgba(231, 76, 60, 0.15);
+      border: 1px solid rgba(231, 76, 60, 0.3);
+      color: #ff8080;
+    }
+
+    /* ── Submit button ── */
+    .btn-auth {
+      width: 100%;
+      padding: 0.95rem 1.5rem;
+      background: linear-gradient(135deg, hsl(196, 62%, 42%), hsl(178, 52%, 38%));
+      color: white;
+      border: none;
+      border-radius: var(--radius-md);
+      font-family: var(--font-body);
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      margin-top: 0.5rem;
+      box-shadow: 0 4px 20px rgba(49, 130, 182, 0.35);
+    }
+
+    .btn-auth:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(49, 130, 182, 0.5);
+    }
+
+    .btn-auth:disabled {
+      opacity: 0.6;
+      transform: none;
+      cursor: not-allowed;
+    }
+
+    /* ── Footer text ── */
+    .auth-footer {
+      text-align: center;
+      margin-top: 1.5rem;
+      font-size: 0.875rem;
+      color: rgba(255,255,255,0.45);
+    }
+
+    .auth-footer a {
+      color: hsl(196, 80%, 72%);
+      font-weight: 600;
+      text-decoration: none;
+      transition: color var(--transition-fast);
+    }
+
+    .auth-footer a:hover { color: white; }
+
+    /* ── Divider ── */
+    .auth-divider {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      color: rgba(255,255,255,0.25);
+      font-size: 0.78rem;
+      margin: 0.5rem 0;
+    }
+
+    .auth-divider::before,
+    .auth-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(255,255,255,0.12);
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Video background -->
+  <div class="auth-scene">
+    <video class="auth-video" autoplay muted loop playsinline preload="auto" aria-hidden="true">
+      <source src="../assets/videos/konkan-hero.mp4" type="video/mp4" />
+    </video>
+    <div class="auth-scene-overlay"></div>
+  </div>
+
+  <!-- Navbar -->
+  <nav class="auth-navbar" role="navigation" aria-label="Auth Navigation">
+    <a href="../index.html" class="auth-nav-logo" aria-label="KonkanStay Home">
+      <img class="auth-nav-logo-icon" src="../assets/images/konkanstay-mark.svg" alt="" />
+      <div>
+        <span class="auth-nav-logo-name">KonkanStay</span>
+        <span class="auth-nav-logo-tagline">Coastal Escapes</span>
+      </div>
+    </a>
+  </nav>
+
+  <!-- Scrollable layer -->
+  <div class="auth-scroll">
+    <div class="auth-card" role="main">
+      <span class="auth-card-badge">🔐 Secure Login</span>
+      <h1>Welcome Back</h1>
+      <p class="auth-card-subtitle">Sign in to your KonkanStay account to continue your coastal journey.</p>
+
+      <div id="auth-alert" class="auth-alert" role="alert"></div>
+
+      <form id="login-form" class="auth-form" novalidate>
+
+        <!-- Email -->
+        <div class="field-group">
+          <label class="field-label" for="email">Email Address</label>
+          <div class="field-wrap">
+            <span class="field-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,12 2,6"/></svg>
+            </span>
+            <input class="field-input" type="email" id="email" name="email" placeholder="you@example.com" required autocomplete="email" />
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div class="field-group">
+          <label class="field-label" for="password">Password</label>
+          <div class="field-wrap">
+            <span class="field-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </span>
+            <input class="field-input" type="password" id="password" name="password" placeholder="••••••••" required autocomplete="current-password" />
+            <button type="button" class="field-eye" id="toggle-pass" aria-label="Toggle password visibility">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-auth" id="btn-login">Sign In to KonkanStay</button>
+      </form>
+
+      <p class="auth-footer">Don't have an account? <a href="register.html">Create one free</a></p>
+    </div>
+  </div>
+
+  <script>
+    // Toggle password eye
+    document.getElementById('toggle-pass')?.addEventListener('click', () => {
+      const inp = document.getElementById('password');
+      inp.type = inp.type === 'password' ? 'text' : 'password';
+    });
+  </script>
+  <script type="module" src="../assets/js/auth.js"></script>
+</body>
+</html>
