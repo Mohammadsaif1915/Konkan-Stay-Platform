@@ -239,7 +239,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const locAvgs   = locLabels.map(l => Math.round(locGroups[l].reduce((s, v) => s + v, 0) / locGroups[l].length));
 
         new Chart(document.getElementById('priceChart'), {
-          type: 'doughnut',
+          type: 'pie',
           data: {
             labels: locLabels,
             datasets: [{
@@ -412,7 +412,7 @@ document.addEventListener('DOMContentLoaded', () => {
         : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
       revenueChart = new Chart(ctx, {
-        type: 'doughnut',
+        type: 'pie',
         data: {
           labels: months,
           datasets: [{
