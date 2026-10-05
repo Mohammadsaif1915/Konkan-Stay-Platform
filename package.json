@@ -8,8 +8,8 @@
     "build": "vite build",
     "test": "node --test tests/bookingUtils.test.mjs",
     "test:rules": "firebase emulators:exec --only firestore --project demo-konkanstay \"node --test tests/firestore.rules.test.mjs\"",
-    "check:firebase": "node --env-file=.env test-firebase.mjs",
-    "seed:properties": "node --env-file=.env seed_properties.mjs",
+    "check:firebase": "node --env-file=.env scripts/test-firebase.mjs",
+    "seed:properties": "node --env-file=.env scripts/seed_properties.mjs",
     "migrate:property-details": "node --env-file=.env scripts/migrateLegacyPropertyDetails.mjs",
     "migrate:booking-availability": "node --env-file=.env scripts/migrateConfirmedBookingAvailability.mjs"
   },

@@ -21,12 +21,12 @@ A multi-page coastal-stay marketplace for the Konkan region of Maharashtra. The 
 | Route | Audience | Purpose |
 | --- | --- | --- |
 | `/` | Everyone | Landing page, destination highlights, and search form |
-| `/pages/search.html` | Everyone | Browse and filter listings; run the customer-side booking featurenstration |
-| `/pages/login.html` | Everyone | Sign in with Firebase Authentication |
-| `/pages/register.html` | Everyone | Create a traveler or host account |
-| `/pages/dashboard-customer.html` | Travelers | Browse, view the map, track Firestore bookings and local feature bookings, and print confirmations |
-| `/pages/dashboard-host.html` | Hosts | Create listings and review legacy Firestore booking requests |
-| `/pages/dashboard-host.html?feature=host` | Everyone | Read-only host dashboard presentation with fictional sample properties and bookings |
+| `/pages/search/search.html` | Everyone | Browse and filter listings; run the customer-side booking featurenstration |
+| `/pages/login/login.html` | Everyone | Sign in with Firebase Authentication |
+| `/pages/register/register.html` | Everyone | Create a traveler or host account |
+| `/pages/dashboard-customer/dashboard-customer.html` | Travelers | Browse, view the map, track Firestore bookings and local feature bookings, and print confirmations |
+| `/pages/dashboard-host/dashboard-host.html` | Hosts | Create listings and review legacy Firestore booking requests |
+| `/pages/dashboard-host/dashboard-host.html?feature=host` | Everyone | Read-only host dashboard presentation with fictional sample properties and bookings |
 
 ## 🏗️ System Architecture
 
@@ -180,7 +180,7 @@ npm run build
 npm audit --omit=dev
 ```
 
-The test suite is intentionally offline. `test-firebase.mjs` is a separate live connectivity check and is not included in `npm test`.
+The test suite is intentionally offline. `scripts/test-firebase.mjs` is a separate live connectivity check and is not included in `npm test`.
 
 ## 📦 Build and Hosting
 
