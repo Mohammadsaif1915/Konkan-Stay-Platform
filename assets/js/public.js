@@ -19,53 +19,118 @@ document.addEventListener('DOMContentLoaded', async () => {
   const DEMO_BOOKINGS_KEY = 'konkanstay-demo-bookings-v1';
   const DEMO_HOLDS_KEY = 'konkanstay-demo-holds-v1';
   const DEMO_HOLD_DURATION = 10 * 60 * 1000;
-  const demoProperties = [
+  const HC_AVAIL_KEY = 'konkanstay-hc-availability-v1';
+  const HARDCODED_HOST_EMAIL = 'mira@konkanstay.com';
+
+  // Hardcoded host properties (same as dashboard.js)
+  // Login: mira@konkanstay.com / Password123
+  const hardcodedHostProperties = [
     {
-      id: 'demo-cove-for-two', title: 'Cove for Two Cottage', location: 'Kashid', type: 'Cottage',
-      price: 2800, guests: 2, images: ['../assets/images/stay-types/cottages.jpg'],
-      description: 'An intimate local sample stay for two, included to demonstrate the booking experience.',
-      amenities: ['WiFi', 'Beach Access', 'AC']
+      id: 'hc-prop-alibaug-villa',
+      hostEmail: HARDCODED_HOST_EMAIL,
+      title: 'Azure Cliffs Villa',
+      location: 'Alibaug', type: 'Villa',
+      price: 8500, guests: 8, bedrooms: 4,
+      description: 'A stunning sea-facing villa perched on the cliffs of Alibaug. Wake up to breathtaking ocean views, enjoy private beach access, and unwind in the infinity pool. Just 2 hours from Mumbai — your perfect coastal escape.',
+      amenities: ['Pool', 'Beach Access', 'Sea View', 'WiFi', 'AC', 'Kitchen', 'Free Parking'],
+      images: ['../assets/images/stays/sea-view-villa.jpg'],
+      image: '../assets/images/stays/sea-view-villa.jpg',
+      isPublic: true, isHardcoded: true, createdAt: '2026-01-10T00:00:00.000Z'
     },
+    {
+      id: 'hc-prop-kashid-beach',
+      hostEmail: HARDCODED_HOST_EMAIL,
+      title: 'Shoreline Beach House',
+      location: 'Kashid', type: 'Beach House',
+      price: 6200, guests: 6, bedrooms: 3,
+      description: 'Step directly onto the famous white sands of Kashid from this beautiful beach house. Designed with local Konkan aesthetics and modern comforts — ideal for a family holiday or a friends getaway.',
+      amenities: ['Beach Access', 'Sea View', 'WiFi', 'BBQ Grill', 'Free Parking', 'Hot Water'],
+      images: ['../assets/images/stay-types/beach-houses.jpg'],
+      image: '../assets/images/stay-types/beach-houses.jpg',
+      isPublic: true, isHardcoded: true, createdAt: '2026-01-12T00:00:00.000Z'
+    },
+    {
+      id: 'hc-prop-tarkarli-cottage',
+      hostEmail: HARDCODED_HOST_EMAIL,
+      title: 'Coral Cove Cottage',
+      location: 'Tarkarli', type: 'Cottage',
+      price: 4800, guests: 4, bedrooms: 2,
+      description: 'A charming cottage nestled among coconut palms, 5 minutes from Tarkarli\'s pristine beach. Perfect for couples or a small family. Snorkeling and dolphin spotting tours available nearby.',
+      amenities: ['Beach Access', 'WiFi', 'Kitchen', 'Sea View', 'Caretaker'],
+      images: ['../assets/images/stays/coastal-escape.jpg'],
+      image: '../assets/images/stays/coastal-escape.jpg',
+      isPublic: true, isHardcoded: true, createdAt: '2026-01-15T00:00:00.000Z'
+    },
+    {
+      id: 'hc-prop-dapoli-farmhouse',
+      hostEmail: HARDCODED_HOST_EMAIL,
+      title: 'Mango Grove Farmhouse',
+      location: 'Dapoli', type: 'Farmhouse',
+      price: 9800, guests: 14, bedrooms: 6,
+      description: 'A sprawling farmhouse surrounded by mango orchards in lush Dapoli. Perfect for large family reunions, corporate retreats, or celebrations. Bonfire area, spacious lawns, and a fully equipped kitchen.',
+      amenities: ['Kitchen', 'BBQ Grill', 'Free Parking', 'Pet Friendly', 'WiFi', 'Bonfire', 'Caretaker'],
+      images: ['../assets/images/stays/konkan-garden-retreat.jpg'],
+      image: '../assets/images/stays/konkan-garden-retreat.jpg',
+      isPublic: true, isHardcoded: true, createdAt: '2026-01-18T00:00:00.000Z'
+    },
+    {
+      id: 'hc-prop-malvan-villa',
+      hostEmail: HARDCODED_HOST_EMAIL,
+      title: 'Malvan Heritage Villa',
+      location: 'Malvan', type: 'Villa',
+      price: 7200, guests: 10, bedrooms: 5,
+      description: 'An elegant heritage villa with Indo-Portuguese architecture in the heart of Malvan. Minutes from Sindhudurg Fort, local fish markets, and the famous Malvan seafood cuisine. Authentic Konkan experience guaranteed.',
+      amenities: ['Pool', 'AC', 'Kitchen', 'Free Parking', 'WiFi', 'Caretaker', 'Hot Water'],
+      images: ['../assets/images/stay-types/villas.jpg'],
+      image: '../assets/images/stay-types/villas.jpg',
+      isPublic: true, isHardcoded: true, createdAt: '2026-01-20T00:00:00.000Z'
+    },
+    {
+      id: 'hc-prop-murud-bungalow',
+      hostEmail: HARDCODED_HOST_EMAIL,
+      title: 'Fort View Bungalow',
+      location: 'Murud', type: 'Bungalow',
+      price: 5500, guests: 6, bedrooms: 3,
+      description: 'Wake up to iconic views of Janjira Fort from this beautifully restored colonial bungalow. Peaceful, spacious, and steeped in history — ideal for history lovers and beach enthusiasts alike.',
+      amenities: ['Sea View', 'Beach Access', 'WiFi', 'Kitchen', 'Free Parking', 'Hot Water'],
+      images: ['../assets/images/stay-types/bunglows.jpg'],
+      image: '../assets/images/stay-types/bunglows.jpg',
+      isPublic: true, isHardcoded: true, createdAt: '2026-01-22T00:00:00.000Z'
+    }
+  ];
+
+  // Helper to get host-blocked dates from localStorage
+  function getHardcodedHostBlocked(propId) {
+    try {
+      const all = JSON.parse(localStorage.getItem(HC_AVAIL_KEY) || '{}');
+      return new Set(all[propId] || []);
+    } catch { return new Set(); }
+  }
+
+  // Additional demo-only properties (no host)
+  const demoProperties = [
     {
       id: 'demo-coconut-grove-bungalow', title: 'Coconut Grove Bungalow', location: 'Alibaug', type: 'Bungalow',
       price: 4200, guests: 5, images: ['../assets/images/stay-types/bunglows.jpg'],
-      description: 'A local sample bungalow for a small family or friends travelling together.',
+      description: 'A local sample bungalow for a small family or friends travelling together. Great for weekend getaways.',
       amenities: ['WiFi', 'Kitchen', 'Free Parking']
     },
     {
-      id: 'demo-seaview-family-villa', title: 'Seaview Family Villa', location: 'Malvan', type: 'Villa',
-      price: 7800, guests: 8, images: ['../assets/images/stays/sea-view-villa.jpg'],
-      description: 'A local sample villa with room for a larger family group.',
-      amenities: ['WiFi', 'Pool', 'Sea View', 'AC']
-    },
-    {
-      id: 'demo-garden-farmhouse', title: 'Garden Courtyard Farmhouse', location: 'Dapoli', type: 'Farmhouse',
-      price: 6400, guests: 10, images: ['../assets/images/stays/konkan-garden-retreat.jpg'],
-      description: 'A local sample farmhouse for a large family or group stay.',
-      amenities: ['Kitchen', 'BBQ Grill', 'Free Parking', 'Pet Friendly']
-    },
-    {
-      id: 'demo-tarkarli-beach-house', title: 'Tarkarli Beach House', location: 'Tarkarli', type: 'Beach House',
-      price: 5600, guests: 6, images: ['../assets/images/stay-types/beach-houses.jpg'],
-      description: 'A local sample beach house with space for a family-sized group.',
-      amenities: ['Beach Access', 'Sea View', 'WiFi']
-    },
-    {
-      id: 'demo-murud-heritage-cottage', title: 'Murud Heritage Cottage', location: 'Murud', type: 'Cottage',
-      price: 3900, guests: 4, images: ['../assets/images/destinations/murud.jpg'],
-      description: 'A local sample cottage for a couple or small family.',
-      amenities: ['WiFi', 'Kitchen', 'Free Parking']
+      id: 'demo-cove-for-two', title: 'Cove for Two Cottage', location: 'Kashid', type: 'Cottage',
+      price: 2800, guests: 2, images: ['../assets/images/stay-types/cottages.jpg'],
+      description: 'An intimate cottage for two, right next to the sea. Ideal for romantic retreats and couples getaways.',
+      amenities: ['WiFi', 'Beach Access', 'AC']
     },
     {
       id: 'demo-konkan-holiday-home', title: 'Konkan Holiday Home', location: 'Dapoli', type: 'Holiday Home',
       price: 9200, guests: 12, images: ['../assets/images/stay-types/holiday-homes.jpg'],
-      description: 'A local sample holiday home with capacity for a large family group.',
+      description: 'A spacious holiday home with capacity for large groups. Perfect for family reunions and celebrations.',
       amenities: ['Pool', 'Kitchen', 'BBQ Grill', 'Free Parking']
     },
     {
       id: 'demo-kashid-coast-resort', title: 'Kashid Coast Resort Suite', location: 'Kashid', type: 'Resort',
       price: 4700, guests: 3, images: ['../assets/images/destinations/kashid.jpg'],
-      description: 'A local sample resort suite for a couple or small family.',
+      description: 'A premium resort suite on Kashid\'s famous white sand beach. Includes daily breakfast and beach access.',
       amenities: ['Pool', 'AC', 'Beach Access']
     }
   ].map(property => ({ ...property, hostEmail: '', isDemo: true }));
@@ -99,6 +164,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     const checkin = document.getElementById('search-checkin')?.value || '';
     const checkout = document.getElementById('search-checkout')?.value || '';
     let propertyReservations = reservations;
+
+    if (property.isHardcoded) {
+      if (checkin && checkout && isHardcodedPropBlocked(property.id, checkin, checkout)) {
+        return { kind: 'occupied', label: 'Blocked for these dates by Host' };
+      }
+      if (checkin && checkout) return { kind: 'available', label: 'Available for selected dates' };
+      return { kind: 'available', label: 'Available now · KonkanStay Host' };
+    }
+
     if (!property.isDemo) {
       if (!liveAvailability.has(property.id)) {
         void loadPropertyAvailability(property.id);
@@ -127,6 +201,20 @@ document.addEventListener('DOMContentLoaded', async () => {
         ? `Available now · next booked ${formatDate(result.bookedFrom)}`
         : property.isDemo ? 'Available now · demo calendar' : 'Available now'
     };
+  }
+
+  // Check if a hardcoded host property is blocked for given dates
+  function isHardcodedPropBlocked(propId, checkin, checkout) {
+    if (!checkin || !checkout) return false;
+    const blocked = getHardcodedHostBlocked(propId);
+    if (blocked.size === 0) return false;
+    const start = new Date(checkin + 'T00:00:00');
+    const end = new Date(checkout + 'T00:00:00');
+    for (let d = new Date(start); d < end; d.setDate(d.getDate() + 1)) {
+      const key = d.toISOString().split('T')[0];
+      if (blocked.has(key)) return true;
+    }
+    return false;
   }
 
   async function loadPropertyAvailability(propertyId, refresh = false) {
@@ -228,7 +316,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         <div class="prop-card-img-wrap">
           <img class="prop-card-img" src="${escapeHtml(img(p))}" alt="${escapeHtml(p.title)}" loading="lazy"
             onerror="this.src='../assets/images/destinations/alibaug.avif'" />
-          <span class="prop-card-badge">${escapeHtml(p.isDemo ? 'Demo listing' : (p.type || 'Coastal Stay'))}</span>
+          <span class="prop-card-badge">${escapeHtml(p.isDemo ? 'Demo listing' : p.isHardcoded ? ('🏠 ' + (p.type || 'KonkanStay')) : (p.type || 'Coastal Stay'))}</span>
           <button class="prop-card-wishlist" aria-label="Wishlist" data-wish="${p.id}">
             <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
           </button>
@@ -286,9 +374,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   function showDemoCatalog(message) {
-    allProperties = demoProperties;
-    if (requestedPropertyId && !demoProperties.some(property => property.id === requestedPropertyId)) {
-      requestedPropertyId = demoProperties[0].id;
+    // Always include hardcoded host properties alongside demo ones
+    allProperties = [...hardcodedHostProperties, ...demoProperties];
+    if (requestedPropertyId && !allProperties.some(property => property.id === requestedPropertyId)) {
+      requestedPropertyId = allProperties[0].id;
     }
     let fallbackNote = document.querySelector('.demo-fallback-note');
     if (!fallbackNote) {
@@ -323,12 +412,23 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   try {
-    allProperties = await getProperties();
-    if (allProperties.length === 0) {
-      showDemoCatalog('No live listings are available yet. Browse these local sample stays; calendars and payments are simulated in this browser.');
+    const liveProps = await getProperties();
+    // Always include hardcoded host properties (merge, avoid duplicates)
+    const liveIds = new Set(liveProps.map(p => p.id));
+    const filteredHardcoded = hardcodedHostProperties.filter(p => !liveIds.has(p.id));
+    if (liveProps.length === 0) {
+      allProperties = [...filteredHardcoded, ...demoProperties];
+      let fallbackNote = document.querySelector('.demo-fallback-note');
+      if (!fallbackNote) {
+        fallbackNote = document.createElement('p');
+        fallbackNote.className = 'demo-fallback-note';
+        grid?.before(fallbackNote);
+      }
+      fallbackNote.textContent = 'No live listings yet. Browse these stays — the KonkanStay Host properties are fully bookable!';
     } else {
-      applyAndRender();
+      allProperties = [...liveProps, ...filteredHardcoded];
     }
+    applyAndRender();
   } catch (err) {
     console.error('[KonkanStay] Failed to load properties:', err);
     showDemoCatalog('Live listings are unavailable. Browse these local sample stays; calendars and payments are simulated in this browser.');

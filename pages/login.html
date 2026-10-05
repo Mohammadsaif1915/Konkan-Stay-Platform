@@ -9,12 +9,21 @@
 
   <link rel="icon" type="image/svg+xml" href="../assets/images/konkanstay-mark.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Playfair+Display:wght@700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:wght@700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <script type="importmap">
+    {
+      "imports": {
+        "firebase/app": "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js",
+        "firebase/auth": "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js",
+        "firebase/firestore": "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js"
+      }
+    }
+  </script>
 
   <style>
     /* ── Auth page base ── */
-    html, body { height: 100%; overflow: hidden; }
+    html, body { height: 100%; overflow: auto; }
 
     .auth-scene {
       position: fixed;
@@ -303,7 +312,7 @@
 <body>
   <!-- Video background -->
   <div class="auth-scene">
-    <video class="auth-video" autoplay muted loop playsinline preload="auto" aria-hidden="true">
+    <video class="auth-video" autoplay muted loop playsinline preload="metadata" aria-hidden="true">
       <source src="../assets/videos/konkan-hero.mp4" type="video/mp4" />
     </video>
     <div class="auth-scene-overlay"></div>
@@ -360,6 +369,17 @@
       </form>
 
       <p class="auth-footer">Don't have an account? <a href="register.html">Create one free</a></p>
+
+      <!-- Demo credentials for testing -->
+      <div style="margin-top:1.5rem;padding:1rem;background:rgba(49,130,182,0.08);border:1px solid rgba(49,130,182,0.18);border-radius:12px;">
+        <p style="font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:0.75rem;">🔑 Demo Accounts</p>
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+          <button type="button" onclick="document.getElementById('email').value='mira@konkanstay.com';document.getElementById('password').value='Password123';" style="flex:1;min-width:130px;background:rgba(49,130,182,0.15);border:1px solid rgba(49,130,182,0.25);border-radius:8px;padding:0.55rem 0.75rem;cursor:pointer;text-align:left;transition:all 0.15s;" onmouseover="this.style.background='rgba(49,130,182,0.25)'" onmouseout="this.style.background='rgba(49,130,182,0.15)'">
+            <div style="font-size:0.75rem;font-weight:700;color:hsl(196,80%,72%);">🏠 Host Account</div>
+            <div style="font-size:0.68rem;color:rgba(255,255,255,0.4);margin-top:1px;">mira@konkanstay.com</div>
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 

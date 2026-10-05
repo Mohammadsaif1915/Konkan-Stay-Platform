@@ -23,12 +23,29 @@
   <!-- Favicon placeholder -->
   <link rel="icon" type="image/svg+xml" href="assets/images/konkanstay-mark.svg" />
 
+  <!-- Fonts — preconnect for speed, swap for zero layout-shift -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Playfair+Display:ital,wght@0,700;1,500&family=Inter:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
+
   <!-- Stylesheet -->
   <link rel="stylesheet" href="assets/css/style.css" />
+
+  <!-- Import Map for Live Server Compatibility -->
+  <script type="importmap">
+    {
+      "imports": {
+        "firebase/app": "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js",
+        "firebase/auth": "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js",
+        "firebase/firestore": "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js"
+      }
+    }
+  </script>
 </head>
 
 <body>
-
   <!-- ══════════════════════════════════════════════════════════════════════
      NAVBAR
      ══════════════════════════════════════════════════════════════════════ -->
@@ -123,12 +140,14 @@
       </p>
 
       <!-- Search Box -->
-      <form class="hero-search" id="hero-search" role="search" aria-label="Property search" action="pages/search.html" method="GET">
+      <form class="hero-search" id="hero-search" role="search" aria-label="Property search" action="pages/search.html"
+        method="GET">
 
         <div class="search-field" id="search-where-field">
           <span class="search-field-label">Where</span>
           <div class="search-field-input">
-            <select id="search-destination" name="destination" aria-label="Search destination" style="width: 100%; border: none; background: transparent; font-family: inherit; font-size: inherit; color: var(--clr-navy); outline: none;">
+            <select id="search-destination" name="destination" aria-label="Search destination"
+              style="width: 100%; border: none; background: transparent; font-family: inherit; font-size: inherit; color: var(--clr-navy); outline: none;">
               <option value="">Anywhere</option>
               <option value="Alibaug">Alibaug</option>
               <option value="Kashid">Kashid</option>
@@ -326,6 +345,29 @@
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                 stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <line x1="5" y1="12" x2="19" y2="12" />
+                <polyline points="12 5 19 12 12 19" />
+              </svg>
+            </span>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+     FEATURED STAYS SECTION
+     ══════════════════════════════════════════════════════════════════════ -->
+  <section class="featured-stays section" id="featured-stays" aria-labelledby="featured-heading">
+    <div class="container">
+
+      <header class="section-header reveal">
+        <span class="section-label">Top Rated</span>
+        <h2 class="section-title" id="featured-heading">Handpicked for You</h2>
+        <p class="section-subtitle">Experience the finest coastal hospitality. Here are some of our most loved stays.
+        </p>
+      </header>
+
       <div class="stays-grid">
 
         <!-- Stay Card 1 -->
@@ -744,123 +786,11 @@
 
     </div>
   </footer>
-
-
-  <!-- ══════════════════════════════════════════════════════════════════════
-     MODALS
-     ══════════════════════════════════════════════════════════════════════ -->
-  
-  <!-- Property Details Modal -->
-  <div class="modal-overlay" id="public-property-modal">
-    <div class="modal-content" style="max-width: 800px; max-height: 90vh; overflow-y: auto;">
-      <div class="modal-close" id="close-public-property-modal">&times;</div>
-      <div class="prop-modal-header" style="margin-bottom: 1.5rem;">
-        <h2 id="public-detail-title" style="font-family: var(--font-heading); color: var(--clr-navy); font-size: 2rem;">Property Title</h2>
-        <p id="public-detail-loc" style="color: var(--clr-text-mid); font-size: 0.95rem;">Location</p>
-      </div>
-
-      <div class="prop-modal-gallery" id="public-detail-gallery" style="display: flex; gap: 0.5rem; overflow-x: auto; margin-bottom: 1.5rem; height: 250px;">
-        <!-- Images injected here -->
-      </div>
-
-      <div style="display: flex; flex-wrap: wrap; gap: 2rem;">
-        <div style="flex: 2; min-width: 300px;">
-          <h3 style="margin-bottom: 0.5rem; color: var(--clr-navy);">About this stay</h3>
-          <p id="public-detail-desc" style="color: var(--clr-text-mid); line-height: 1.6; margin-bottom: 1.5rem;">Description goes here.</p>
-        </div>
-
-        <div style="flex: 1; min-width: 250px; background: var(--clr-cream); padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid rgba(0,0,0,0.05); height: fit-content;">
-          <div style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; color: var(--clr-navy);">
-            <span id="public-detail-price">₹0</span> <span style="font-size: 0.9rem; font-weight: 400; color: var(--clr-text-mid);">/ night</span>
-          </div>
-          <p style="margin-bottom: 1.5rem; font-size: 0.9rem; color: var(--clr-text-mid);">Maximum <span id="public-detail-guests">0</span> guests allowed.</p>
-          <button class="btn btn-primary btn-block" id="btn-public-book">Book Now</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Booking & Auth Modal -->
-  <div class="modal-overlay" id="public-booking-modal">
-    <div class="modal-content" style="max-width: 500px; max-height: 90vh; overflow-y: auto;">
-      <div class="modal-close" id="close-public-booking-modal">&times;</div>
-      <h2 style="margin-bottom: 0.5rem; font-family: var(--font-heading); color: var(--clr-navy);">Complete Booking</h2>
-      <p style="color: var(--clr-text-mid); margin-bottom: 1.5rem; font-size: 0.95rem;" id="public-booking-prop-title">Property Name</p>
-
-      <form id="public-booking-form" style="display: flex; flex-direction: column; gap: 1rem;">
-        
-        <!-- Dates & Guests -->
-        <div style="display: flex; gap: 1rem;">
-          <div style="flex: 1; display: flex; flex-direction: column;">
-            <label style="font-size: 0.85rem; font-weight: 600; margin-bottom: 0.3rem;">Check-in</label>
-            <input type="date" id="book-checkin" required style="padding: 0.6rem; border: 1px solid #ccc; border-radius: var(--radius-sm);">
-          </div>
-          <div style="flex: 1; display: flex; flex-direction: column;">
-            <label style="font-size: 0.85rem; font-weight: 600; margin-bottom: 0.3rem;">Check-out</label>
-            <input type="date" id="book-checkout" required style="padding: 0.6rem; border: 1px solid #ccc; border-radius: var(--radius-sm);">
-          </div>
-        </div>
-        <div style="display: flex; gap: 1rem;">
-          <div style="flex: 1; display: flex; flex-direction: column;">
-            <label style="font-size: 0.85rem; font-weight: 600; margin-bottom: 0.3rem;">Guests</label>
-            <input type="number" id="book-guests" required min="1" value="2" style="padding: 0.6rem; border: 1px solid #ccc; border-radius: var(--radius-sm);">
-          </div>
-          <div style="flex: 1; display: flex; flex-direction: column;">
-            <label style="font-size: 0.85rem; font-weight: 600; margin-bottom: 0.3rem;">Total Price (₹)</label>
-            <input type="text" id="book-total" readonly style="padding: 0.6rem; border: 1px solid #ccc; border-radius: var(--radius-sm); background: rgba(0,0,0,0.05); font-weight: 600;">
-          </div>
-        </div>
-
-        <div style="border-top: 1px solid #eee; margin: 0.5rem 0;"></div>
-
-        <!-- Auth Section -->
-        <div id="booking-auth-section">
-          <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem; color: var(--clr-navy);">Authentication Required</h3>
-          <p style="font-size: 0.85rem; color: var(--clr-text-mid); margin-bottom: 1rem;">Please log in or register to complete this booking.</p>
-          
-          <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
-            <label style="flex: 1; display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-              <input type="radio" name="authMode" value="login" checked> Login
-            </label>
-            <label style="flex: 1; display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-              <input type="radio" name="authMode" value="register"> Register
-            </label>
-          </div>
-
-          <div id="auth-register-fields" style="display: none; flex-direction: column; gap: 1rem; margin-bottom: 1rem;">
-            <input type="text" id="auth-fullname" placeholder="Full Name" style="padding: 0.6rem; border: 1px solid #ccc; border-radius: var(--radius-sm); width: 100%;">
-          </div>
-
-          <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1rem;">
-            <input type="email" id="auth-email" placeholder="Email Address" required style="padding: 0.6rem; border: 1px solid #ccc; border-radius: var(--radius-sm); width: 100%;">
-            <input type="password" id="auth-password" placeholder="Password" required style="padding: 0.6rem; border: 1px solid #ccc; border-radius: var(--radius-sm); width: 100%;">
-          </div>
-        </div>
-
-        <div style="border-top: 1px solid #eee; margin: 0.5rem 0;"></div>
-
-        <!-- CAPTCHA -->
-        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-          <label style="font-size: 0.85rem; font-weight: 600;">Security Check</label>
-          <div style="display: flex; align-items: center; gap: 1rem;">
-            <div id="captcha-display" style="background: #eee; padding: 0.6rem 1rem; font-family: monospace; font-size: 1.2rem; font-weight: bold; letter-spacing: 2px; border-radius: var(--radius-sm); user-select: none;">
-              4B8Y
-            </div>
-            <input type="text" id="captcha-input" placeholder="Enter code" required style="padding: 0.6rem; border: 1px solid #ccc; border-radius: var(--radius-sm); flex: 1;">
-          </div>
-        </div>
-
-        <div id="booking-alert" style="display: none; padding: 0.8rem; border-radius: var(--radius-sm); font-size: 0.9rem; margin-top: 0.5rem;"></div>
-
-        <button type="submit" class="btn btn-primary btn-block" style="margin-top: 1rem;" id="btn-confirm-booking">Confirm Booking</button>
-      </form>
-    </div>
-  </div>
-
   <!-- ══════════════════════════════════════════════════════════════════════
      SCRIPTS
      ══════════════════════════════════════════════════════════════════════ -->
   <script type="module" src="assets/js/main.js" defer></script>
   <script type="module" src="assets/js/public.js" defer></script>
 </body>
+
 </html>

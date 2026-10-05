@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
       try {
         await registerUser(email, password, profile);
         showToast('🎉 Account created! Redirecting to login…', 'success');
-        setTimeout(() => { window.location.href = 'login.html'; }, 1800);
+        setTimeout(() => { window.location.href = 'login.html'; }, 500);
       } catch (err) {
         console.error('[KonkanStay Register Error]', err);
         const msg = friendlyFirebaseError(err.code) || err.message || 'Registration failed. Please try again.';

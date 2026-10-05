@@ -4,71 +4,84 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Host Dashboard - KonkanStay</title>
+  <title>Host Dashboard — KonkanStay</title>
+  <meta name="description" content="Manage your coastal properties, track bookings, and set availability on KonkanStay.">
   <link rel="icon" type="image/svg+xml" href="../assets/images/konkanstay-mark.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../assets/css/style.css">
   <link rel="stylesheet" href="../assets/css/dashboard.css">
+  <script type="importmap">
+    {
+      "imports": {
+        "firebase/app": "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js",
+        "firebase/auth": "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js",
+        "firebase/firestore": "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js"
+      }
+    }
+  </script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body class="dashboard-page">
-
   <div class="dashboard-container">
 
     <!-- Sidebar -->
     <aside class="dashboard-sidebar">
       <div class="sidebar-header">
         <a href="../index.html" class="sidebar-logo">
-              <div class="sidebar-logo-icon"><img src="../assets/images/konkanstay-mark.svg" alt=""></div>
-          <span class="sidebar-logo-name">KonkanStay</span>
+          <div class="sidebar-logo-icon"><img src="../assets/images/konkanstay-mark.svg" alt=""></div>
+          <div>
+            <span class="sidebar-logo-name">KonkanStay</span>
+            <span class="sidebar-logo-tag">Host Portal</span>
+          </div>
         </a>
       </div>
 
       <div class="sidebar-user">
-        <div class="sidebar-user-name" id="user-name-display">Loading...</div>
-        <div class="sidebar-user-type">Property Renter</div>
+        <div class="sidebar-user-avatar" id="user-avatar-initials">H</div>
+        <div>
+          <div class="sidebar-user-name" id="user-name-display">Loading...</div>
+          <div class="sidebar-user-type">
+            <span class="role-badge host">🏠 Property Host</span>
+          </div>
+        </div>
       </div>
 
       <nav class="sidebar-nav">
         <ul>
           <li><a href="#" class="active" data-target="panel-overview">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
-              Overview
-            </a></li>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            Overview
+          </a></li>
           <li><a href="#" data-target="panel-my-props">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                <polyline points="9 22 9 12 15 12 15 22"></polyline>
-              </svg>
-              My Properties
-            </a></li>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            My Properties
+          </a></li>
           <li><a href="#" data-target="panel-add-prop">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"></circle>
-                <line x1="12" y1="8" x2="12" y2="16"></line>
-                <line x1="8" y1="12" x2="16" y2="12"></line>
-              </svg>
-              Post Property
-            </a></li>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+            Post Property
+          </a></li>
+          <li><a href="#" data-target="panel-availability">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Manage Availability
+          </a></li>
           <li><a href="#" data-target="panel-host-bookings">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                <polyline points="14 2 14 8 20 8"></polyline>
-                <line x1="16" y1="13" x2="8" y2="13"></line>
-                <line x1="16" y1="17" x2="8" y2="17"></line>
-                <polyline points="10 9 9 9 8 9"></polyline>
-              </svg>
-              Bookings Received
-            </a></li>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            Bookings Received
+          </a></li>
         </ul>
       </nav>
 
       <div class="sidebar-footer">
-        <button class="btn btn-outline-white" id="btn-logout" style="width: 100%;">Logout</button>
+        <a href="../pages/search.html" class="sidebar-footer-link">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Browse Stays
+        </a>
+        <button class="btn btn-outline-white" id="btn-logout" style="width:100%;margin-top:0.5rem;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Sign Out
+        </button>
       </div>
     </aside>
 
@@ -78,30 +91,54 @@
       <!-- Overview Panel -->
       <div class="dashboard-panel active" id="panel-overview">
         <header class="dashboard-header">
-          <h1 class="dashboard-title">Dashboard Overview</h1>
-          <p class="dashboard-subtitle">Track your revenue and performance.</p>
+          <div class="dashboard-header-inner">
+            <div>
+              <div class="dashboard-breadcrumb">Host Portal</div>
+              <h1 class="dashboard-title">Dashboard Overview</h1>
+              <p class="dashboard-subtitle">Welcome back! Here's how your properties are performing.</p>
+            </div>
+            <div class="dashboard-header-actions">
+              <button class="btn btn-primary" onclick="document.querySelector('[data-target=panel-add-prop]').click()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Add Property
+              </button>
+            </div>
+          </div>
         </header>
 
         <div class="stat-grid">
-          <div class="stat-card">
+          <div class="stat-card stat-card--revenue">
+            <div class="stat-card-icon">₹</div>
             <span class="stat-title">Total Revenue</span>
             <span class="stat-value" id="host-total-revenue">₹0</span>
-            <svg class="stat-icon" xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+            <span class="stat-change positive">Confirmed bookings</span>
           </div>
-          <div class="stat-card">
+          <div class="stat-card stat-card--bookings">
+            <div class="stat-card-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            </div>
             <span class="stat-title">Total Bookings</span>
             <span class="stat-value" id="host-total-bookings">0</span>
-            <svg class="stat-icon" xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+            <span class="stat-change">All time requests</span>
           </div>
-          <div class="stat-card">
+          <div class="stat-card stat-card--props">
+            <div class="stat-card-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+            </div>
             <span class="stat-title">Active Properties</span>
             <span class="stat-value" id="host-active-props">0</span>
-            <svg class="stat-icon" xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+            <span class="stat-change positive">Listed &amp; live</span>
+          </div>
+          <div class="stat-card stat-card--pending">
+            <div class="stat-card-icon">⏳</div>
+            <span class="stat-title">Pending Review</span>
+            <span class="stat-value" id="host-pending-bookings">0</span>
+            <span class="stat-change warning">Needs attention</span>
           </div>
         </div>
 
         <div class="glass-card">
-          <h3 style="margin-bottom: 1.5rem; color: var(--clr-navy);">Revenue Analytics</h3>
+          <h3 style="margin-bottom:1.5rem;color:var(--clr-navy);font-size:1.1rem;font-weight:700;">Monthly Revenue Analytics</h3>
           <div class="chart-container">
             <canvas id="revenueChart"></canvas>
           </div>
@@ -111,10 +148,17 @@
       <!-- My Properties Panel -->
       <div class="dashboard-panel" id="panel-my-props">
         <header class="dashboard-header">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-            <h1 class="dashboard-title" style="margin-bottom: 0;">My Properties</h1>
+          <div class="dashboard-header-inner">
+            <div>
+              <div class="dashboard-breadcrumb">Properties</div>
+              <h1 class="dashboard-title">My Properties</h1>
+              <p class="dashboard-subtitle">Manage your active listings on KonkanStay.</p>
+            </div>
+            <button class="btn btn-primary" onclick="document.querySelector('[data-target=panel-add-prop]').click()">
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add New
+            </button>
           </div>
-          <p class="dashboard-subtitle">Manage your listings on KonkanStay.</p>
         </header>
         <div class="prop-grid" id="host-prop-grid">
           <!-- Properties injected via JS -->
@@ -124,20 +168,24 @@
       <!-- Add Property Panel -->
       <div class="dashboard-panel" id="panel-add-prop">
         <header class="dashboard-header">
+          <div class="dashboard-breadcrumb">Properties</div>
           <h1 class="dashboard-title">Post a New Property</h1>
-          <p class="dashboard-subtitle">Fill in the details to list your property for travelers.</p>
+          <p class="dashboard-subtitle">Fill in the details below to list your coastal property for travelers.</p>
         </header>
 
         <div class="dash-card">
           <form id="add-property-form" class="dash-form">
+            
+            <div class="form-section-title">📍 Property Details</div>
             <div class="dash-form-row">
               <div class="form-group">
-                <label>Property Title</label>
-                <input type="text" id="prop-title" required placeholder="e.g. Sunset Beach Villa">
+                <label>Property Title *</label>
+                <input type="text" id="prop-title" required placeholder="e.g. Sunset Beach Villa, Alibaug">
               </div>
               <div class="form-group">
-                <label>Location</label>
+                <label>Location *</label>
                 <select id="prop-loc" required>
+                  <option value="">Select location...</option>
                   <option value="Alibaug">Alibaug</option>
                   <option value="Kashid">Kashid</option>
                   <option value="Murud">Murud</option>
@@ -150,46 +198,82 @@
 
             <div class="dash-form-row">
               <div class="form-group">
-                <label>Price per night (₹)</label>
-                <input type="number" id="prop-price" required placeholder="5000">
+                <label>Property Type *</label>
+                <select id="prop-type" required>
+                  <option value="">Select type...</option>
+                  <option value="Villa">Villa</option>
+                  <option value="Beach House">Beach House</option>
+                  <option value="Cottage">Cottage</option>
+                  <option value="Bungalow">Bungalow</option>
+                  <option value="Farmhouse">Farmhouse</option>
+                  <option value="Resort">Resort</option>
+                  <option value="Holiday Home">Holiday Home</option>
+                  <option value="Homestay">Homestay</option>
+                </select>
               </div>
               <div class="form-group">
-                <label>Max Guests</label>
-                <input type="number" id="prop-guests" required min="1" placeholder="4">
+                <label>Price per Night (₹) *</label>
+                <input type="number" id="prop-price" required placeholder="5000" min="500">
               </div>
             </div>
 
             <div class="dash-form-row">
-              <div class="form-group" style="flex: 1;">
-                <label>Property Images (Upload up to 3)</label>
-                <div class="file-upload-wrapper" style="height: auto; padding: 1.5rem;">
-                  <input type="file" id="prop-images" accept="image/*" multiple required>
-                  <div class="file-upload-visual" style="flex-direction: column;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-                    <span id="prop-images-text">Choose up to 7 images or drag & drop</span>
-                  </div>
-                </div>
+              <div class="form-group">
+                <label>Max Guests *</label>
+                <input type="number" id="prop-guests" required min="1" max="50" placeholder="4">
+              </div>
+              <div class="form-group">
+                <label>Bedrooms</label>
+                <input type="number" id="prop-bedrooms" min="1" max="20" placeholder="2">
               </div>
             </div>
 
             <div class="form-group">
-              <label>Description</label>
-              <textarea id="prop-desc" rows="4" required placeholder="Describe your property..."></textarea>
+              <label>Description *</label>
+              <textarea id="prop-desc" rows="4" required placeholder="Describe your property — highlight unique features, proximity to beach, scenic views, etc."></textarea>
             </div>
 
-            <div style="border-top: 1px solid #eee; margin: 1rem 0;"></div>
+            <div class="form-group">
+              <label>Amenities</label>
+              <div class="amenity-checkboxes" id="prop-amenities-checkboxes">
+                <label class="amenity-check"><input type="checkbox" value="WiFi"> 📶 WiFi</label>
+                <label class="amenity-check"><input type="checkbox" value="Pool"> 🏊 Pool</label>
+                <label class="amenity-check"><input type="checkbox" value="Beach Access"> 🏖️ Beach Access</label>
+                <label class="amenity-check"><input type="checkbox" value="AC"> ❄️ AC</label>
+                <label class="amenity-check"><input type="checkbox" value="Kitchen"> 🍳 Kitchen</label>
+                <label class="amenity-check"><input type="checkbox" value="BBQ Grill"> 🔥 BBQ Grill</label>
+                <label class="amenity-check"><input type="checkbox" value="Sea View"> 🌊 Sea View</label>
+                <label class="amenity-check"><input type="checkbox" value="Pet Friendly"> 🐾 Pet Friendly</label>
+                <label class="amenity-check"><input type="checkbox" value="Free Parking"> 🚗 Free Parking</label>
+                <label class="amenity-check"><input type="checkbox" value="Hot Water"> 🚿 Hot Water</label>
+                <label class="amenity-check"><input type="checkbox" value="Caretaker"> 👤 Caretaker</label>
+                <label class="amenity-check"><input type="checkbox" value="Bonfire"> 🔥 Bonfire</label>
+              </div>
+            </div>
 
-            <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Payment Receiving Details</h3>
-            <p style="color: var(--clr-text-light); font-size: 0.85rem; margin-bottom: 1rem;">Provide your payment details so customers can pay you directly.</p>
+            <div class="form-group">
+              <label>Property Images (Upload up to 3) *</label>
+              <div class="file-upload-wrapper">
+                <input type="file" id="prop-images" accept="image/*" multiple required>
+                <div class="file-upload-visual">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                  <span id="prop-images-text">Click to choose up to 3 images or drag &amp; drop</span>
+                  <span style="font-size:0.78rem;color:rgba(255,255,255,0.4)">JPG, PNG — max 3 photos</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-section-title" style="margin-top:1.5rem;">💳 Payment Receiving Details</div>
+            <p style="color:var(--clr-text-light);font-size:0.85rem;margin-bottom:1rem;">Customers will use these details to pay you directly.</p>
 
             <div class="dash-form-row">
               <div class="form-group">
                 <label>UPI ID</label>
-                <input type="text" id="host-upi" placeholder="e.g. host@upi">
+                <input type="text" id="host-upi" placeholder="e.g. yourname@paytm">
               </div>
               <div class="form-group">
                 <label>UPI QR Code (Optional)</label>
-                <input type="file" id="host-qr" accept="image/*">
+                <input type="file" id="host-qr" accept="image/*" style="padding:0.5rem;">
               </div>
             </div>
 
@@ -200,21 +284,101 @@
               </div>
               <div class="form-group">
                 <label>IFSC Code</label>
-                <input type="text" id="host-bank-ifsc" placeholder="IFSC Code">
+                <input type="text" id="host-bank-ifsc" placeholder="e.g. SBIN0001234">
               </div>
             </div>
 
-            <button type="submit" class="btn btn-primary" style="margin-top: 1rem; width: max-content;">Post
-              Property</button>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary btn-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+                List My Property
+              </button>
+            </div>
           </form>
+        </div>
+      </div>
+
+      <!-- ── AVAILABILITY MANAGEMENT PANEL ── -->
+      <div class="dashboard-panel" id="panel-availability">
+        <header class="dashboard-header">
+          <div class="dashboard-breadcrumb">Availability</div>
+          <h1 class="dashboard-title">Manage Availability</h1>
+          <p class="dashboard-subtitle">Block or open dates for your properties. Blocked dates will appear as unavailable on search results.</p>
+        </header>
+
+        <div class="avail-layout">
+          <!-- Property Selector -->
+          <div class="avail-sidebar-panel">
+            <div class="dash-card" style="padding:1.5rem;">
+              <h3 style="font-size:1rem;font-weight:700;color:var(--clr-navy);margin-bottom:1rem;">Select Property</h3>
+              <div id="avail-property-list" class="avail-prop-list">
+                <p style="color:var(--clr-text-light);font-size:0.88rem;">Loading your properties...</p>
+              </div>
+            </div>
+
+            <div class="dash-card" style="padding:1.5rem;margin-top:1rem;">
+              <h3 style="font-size:1rem;font-weight:700;color:var(--clr-navy);margin-bottom:1rem;">Legend</h3>
+              <div class="avail-legend">
+                <div class="legend-item"><span class="legend-dot available"></span>Available</div>
+                <div class="legend-item"><span class="legend-dot blocked-host"></span>Blocked by you</div>
+                <div class="legend-item"><span class="legend-dot blocked-booking"></span>Booked by guest</div>
+              </div>
+            </div>
+
+            <div class="dash-card" style="padding:1.5rem;margin-top:1rem;" id="avail-bulk-panel">
+              <h3 style="font-size:1rem;font-weight:700;color:var(--clr-navy);margin-bottom:1rem;">Block Date Range</h3>
+              <div class="form-group" style="margin-bottom:0.75rem;">
+                <label>From</label>
+                <input type="date" id="avail-block-from" class="dash-input">
+              </div>
+              <div class="form-group" style="margin-bottom:1rem;">
+                <label>To</label>
+                <input type="date" id="avail-block-to" class="dash-input">
+              </div>
+              <button class="btn btn-primary" id="btn-block-range" style="width:100%;margin-bottom:0.5rem;">
+                🔒 Block These Dates
+              </button>
+              <button class="btn btn-outline-navy" id="btn-unblock-range" style="width:100%;">
+                🔓 Unblock These Dates
+              </button>
+            </div>
+          </div>
+
+          <!-- Calendar -->
+          <div class="avail-calendar-area">
+            <div class="dash-card avail-calendar-card">
+              <div class="avail-cal-header">
+                <button class="avail-cal-nav" id="avail-prev-month">&#8592;</button>
+                <h3 class="avail-cal-title" id="avail-cal-title">October 2026</h3>
+                <button class="avail-cal-nav" id="avail-next-month">&#8594;</button>
+              </div>
+              <div id="avail-property-name" style="text-align:center;font-size:0.85rem;color:var(--clr-text-light);margin-bottom:1rem;">Select a property to manage availability</div>
+              <div class="avail-cal-grid">
+                <div class="avail-cal-day-label">Sun</div>
+                <div class="avail-cal-day-label">Mon</div>
+                <div class="avail-cal-day-label">Tue</div>
+                <div class="avail-cal-day-label">Wed</div>
+                <div class="avail-cal-day-label">Thu</div>
+                <div class="avail-cal-day-label">Fri</div>
+                <div class="avail-cal-day-label">Sat</div>
+              </div>
+              <div class="avail-cal-body" id="avail-cal-body">
+                <!-- Days injected by JS -->
+              </div>
+              <div class="avail-cal-footer">
+                <span id="avail-save-status" class="avail-save-status"></span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
       <!-- Bookings Received Panel -->
       <div class="dashboard-panel" id="panel-host-bookings">
         <header class="dashboard-header">
+          <div class="dashboard-breadcrumb">Bookings</div>
           <h1 class="dashboard-title">Bookings Received</h1>
-          <p class="dashboard-subtitle">Review reservations and manage each guest’s stay through check-out.</p>
+          <p class="dashboard-subtitle">Review reservations and manage each guest's stay through check-out.</p>
         </header>
 
         <div class="booking-stage-summary" id="host-booking-summary" aria-live="polite"></div>
@@ -236,14 +400,14 @@
               <thead>
                 <tr>
                   <th>Property</th>
-                  <th>Customer Name</th>
+                  <th>Customer</th>
                   <th>Dates</th>
                   <th>Guests</th>
                   <th>Nights</th>
                   <th>Amount</th>
-                  <th>Payment Reference</th>
+                  <th>Payment Ref</th>
                   <th>Status</th>
-                  <th>Next step</th>
+                  <th>Action</th>
                 </tr>
               </thead>
               <tbody id="host-bookings-list">

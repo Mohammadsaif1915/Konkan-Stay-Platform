@@ -1,8 +1,9 @@
 /**
  * KonkanStay — main.js
  * Landing Page JavaScript | Stage 1
- * Vanilla JS only. No frameworks.
  */
+import { subscribeToAuthChanges, logoutUser, getUserProfile } from './firebase/authService.js';
+import { escapeHtml, getLocalDateString } from './bookingUtils.mjs';
 
 // ── DOM Ready ──────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
@@ -171,8 +172,6 @@ function initSearchDates() {
 // ══════════════════════════════════════════════════════════════════════════
 // 7. AUTH-AWARE NAVBAR — swap login button for profile avatar on sign-in
 // ══════════════════════════════════════════════════════════════════════════
-import { subscribeToAuthChanges, logoutUser, getUserProfile } from './firebase/authService.js';
-import { escapeHtml, getLocalDateString } from './bookingUtils.mjs';
 
 (function initAuthNav() {
   const navActions    = document.getElementById('nav-actions');

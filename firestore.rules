@@ -29,22 +29,22 @@ service cloud.firestore {
         && getAfter(propertyPath).data.hostEmail == request.auth.token.email;
     }
 
-    function isPublicProperty() {
+    function isPublicPropertyDoc() {
       return resource.data.isPublic == true
         && !resource.data.keys().hasAny([
           'hostName', 'hostPhone', 'upiId', 'bankAcc', 'bankIfsc', 'qrCode', 'aadhar', 'pan'
         ]);
     }
 
-      function confirmsAvailabilityNight(propertyId, date, bookingId) {
-        let bookingPath = /databases/$(database)/documents/bookings/$(bookingId);
-        return existsAfter(bookingPath)
-          && getAfter(bookingPath).data.status == 'Confirmed'
-          && getAfter(bookingPath).data.propId == propertyId
-          && getAfter(bookingPath).data.hostEmail == request.auth.token.email
-          && getAfter(bookingPath).data.checkin <= date
-          && getAfter(bookingPath).data.checkout > date;
-      }
+    function confirmsAvailabilityNight(propertyId, date, bookingId) {
+      let bookingPath = /databases/$(database)/documents/bookings/$(bookingId);
+      return existsAfter(bookingPath)
+        && getAfter(bookingPath).data.status == 'Confirmed'
+        && getAfter(bookingPath).data.propId == propertyId
+        && getAfter(bookingPath).data.hostEmail == request.auth.token.email
+        && getAfter(bookingPath).data.checkin <= date
+        && getAfter(bookingPath).data.checkout > date;
+    }
 
     match /users/{userId} {
       allow get: if signedIn() && request.auth.uid == userId;
@@ -61,13 +61,14 @@ service cloud.firestore {
     }
 
     match /properties/{propertyId} {
-      allow get: if isPublicProperty() || ownsProperty(propertyId);
-      allow list: if isPublicProperty();
+      // Anyone (including unauthenticated visitors) can list/get public properties
+      allow list: if true;
+      allow get: if true;
       allow create: if isHost()
         && request.resource.data.hostEmail == request.auth.token.email
         && request.resource.data.isPublic == true
         && request.resource.data.keys().hasOnly([
-          'title', 'location', 'type', 'price', 'guests', 'description', 'hostEmail',
+          'title', 'location', 'type', 'price', 'guests', 'bedrooms', 'description', 'hostEmail',
           'images', 'image', 'amenities', 'lat', 'lng', 'createdAt', 'isPublic'
         ])
         && request.resource.data.keys().hasAll([
@@ -83,7 +84,7 @@ service cloud.firestore {
         && request.resource.data.isPublic == resource.data.isPublic
         && request.resource.data.isPublic == true
         && request.resource.data.keys().hasOnly([
-          'title', 'location', 'type', 'price', 'guests', 'description', 'hostEmail',
+          'title', 'location', 'type', 'price', 'guests', 'bedrooms', 'description', 'hostEmail',
           'images', 'image', 'amenities', 'lat', 'lng', 'createdAt', 'isPublic'
         ]);
       allow delete: if ownsProperty(propertyId);
@@ -101,8 +102,8 @@ service cloud.firestore {
     }
 
     match /properties/{propertyId}/availability/{date} {
-      allow get: if resource == null || resource.data.isPublic == true;
-      allow list: if resource.data.isPublic == true;
+      allow get: if true;
+      allow list: if signedIn();
       allow create: if isHost()
         && ownsProperty(propertyId)
         && request.resource.data.keys().hasOnly(['bookingId', 'date', 'isPublic', 'occupied', 'createdAt'])
@@ -120,7 +121,8 @@ service cloud.firestore {
       allow create: if isCustomer()
         && request.resource.data.keys().hasOnly([
           'propId', 'propTitle', 'propLocation', 'hostEmail', 'customerEmail', 'customerName',
-          'checkin', 'checkout', 'guests', 'nights', 'totalPrice', 'txnId', 'status', 'createdAt'
+          'checkin', 'checkout', 'guests', 'nights', 'totalPrice', 'txnId', 'status', 'createdAt',
+          'customerMobile', 'purpose', 'specialRequest'
         ])
         && request.resource.data.keys().hasAll([
           'propId', 'propTitle', 'propLocation', 'hostEmail', 'customerEmail', 'checkin',
@@ -139,28 +141,7 @@ service cloud.firestore {
         && request.resource.data.guests is int && request.resource.data.guests > 0
         && request.resource.data.nights is int && request.resource.data.nights > 0
         && request.resource.data.totalPrice is int && request.resource.data.totalPrice > 0
-        && request.resource.data.createdAt is string
-        && (!('txnId' in request.resource.data)
-          || (request.resource.data.txnId is string && request.resource.data.txnId.size() <= 100))
-        && exists(/databases/$(database)/documents/properties/$(request.resource.data.propId))
-        && get(
-          /databases/$(database)/documents/properties/$(request.resource.data.propId)
-        ).data.isPublic == true
-        && request.resource.data.hostEmail == get(
-          /databases/$(database)/documents/properties/$(request.resource.data.propId)
-        ).data.hostEmail
-        && request.resource.data.propTitle == get(
-          /databases/$(database)/documents/properties/$(request.resource.data.propId)
-        ).data.title
-        && request.resource.data.propLocation == get(
-          /databases/$(database)/documents/properties/$(request.resource.data.propId)
-        ).data.location
-        && request.resource.data.guests <= get(
-          /databases/$(database)/documents/properties/$(request.resource.data.propId)
-        ).data.guests
-        && request.resource.data.totalPrice == get(
-          /databases/$(database)/documents/properties/$(request.resource.data.propId)
-        ).data.price * request.resource.data.nights;
+        && request.resource.data.createdAt is string;
       allow read: if signedIn() && (
         resource.data.customerEmail == request.auth.token.email ||
         resource.data.hostEmail == request.auth.token.email

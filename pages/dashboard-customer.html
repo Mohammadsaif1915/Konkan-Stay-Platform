@@ -1,82 +1,445 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Customer Dashboard - KonkanStay</title>
+  <title>Customer Dashboard — KonkanStay</title>
+  <meta name="description" content="Discover and book beautiful coastal stays across the Konkan coast.">
   <link rel="icon" type="image/svg+xml" href="../assets/images/konkanstay-mark.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;0,800;1,700&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="../assets/css/style.css">
   <link rel="stylesheet" href="../assets/css/dashboard.css">
+
+  <!-- Internal CSS: visual upgrade layered over dashboard.css -->
+  <style>
+    :root {
+      --ink: #04101f;
+      --deep: #071b33;
+      --tide: #8fe9ff;
+      --tide-2: #4fc3d9;
+      --sun: #ffb35c;
+      --glass: rgba(255, 255, 255, .05);
+      --glass-line: rgba(255, 255, 255, .1);
+    }
+
+    body.dashboard-page {
+      background:
+        radial-gradient(900px 500px at 85% -10%, rgba(79, 195, 217, .22), transparent 60%),
+        radial-gradient(700px 500px at -10% 110%, rgba(255, 179, 92, .13), transparent 60%),
+        var(--ink);
+      font-family: 'Outfit', sans-serif;
+    }
+
+    /* Sidebar */
+    .dashboard-sidebar {
+      background: linear-gradient(180deg, rgba(10, 30, 56, .92), rgba(4, 16, 31, .96));
+      backdrop-filter: blur(18px);
+      border-right: 1px solid var(--glass-line);
+    }
+
+    .sidebar-logo-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      letter-spacing: .01em
+    }
+
+    .sidebar-user {
+      background: var(--glass);
+      border: 1px solid var(--glass-line);
+      border-radius: 16px;
+      margin: 0 1rem 1rem
+    }
+
+    .sidebar-user-avatar {
+      background: linear-gradient(135deg, var(--tide), var(--sun));
+      color: #04202e;
+      font-weight: 800;
+      box-shadow: 0 0 0 3px rgba(143, 233, 255, .2)
+    }
+
+    .sidebar-nav a {
+      border-radius: 12px;
+      position: relative;
+      transition: background .25s, transform .25s, color .25s
+    }
+
+    .sidebar-nav a:hover {
+      background: rgba(143, 233, 255, .08);
+      transform: translateX(4px)
+    }
+
+    .sidebar-nav a.active {
+      background: linear-gradient(90deg, rgba(143, 233, 255, .2), rgba(143, 233, 255, .02));
+      color: #fff
+    }
+
+    .sidebar-nav a.active::before {
+      content: '';
+      position: absolute;
+      left: -1px;
+      top: 20%;
+      bottom: 20%;
+      width: 3px;
+      border-radius: 3px;
+      background: var(--tide);
+      box-shadow: 0 0 12px var(--tide)
+    }
+
+    /* Header */
+    .dashboard-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 3.2vw, 2.7rem);
+      line-height: 1.1;
+      background: linear-gradient(100deg, #fff 30%, var(--tide) 75%, var(--sun));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .dashboard-subtitle {
+      color: rgba(255, 255, 255, .55)
+    }
+
+    /* Stats */
+    .stat-card {
+      background: linear-gradient(145deg, rgba(255, 255, 255, .08), rgba(255, 255, 255, .02));
+      border: 1px solid var(--glass-line);
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+      position: relative;
+      overflow: hidden;
+      transition: transform .35s, border-color .35s, box-shadow .35s;
+    }
+
+    .stat-card::after {
+      content: '';
+      position: absolute;
+      width: 140px;
+      height: 140px;
+      right: -50px;
+      top: -50px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(143, 233, 255, .25), transparent 70%)
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(143, 233, 255, .4);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, .4)
+    }
+
+    .stat-value {
+      font-weight: 800;
+      font-size: 2.1rem
+    }
+
+    /* Search bar */
+    .dash-search-bar {
+      background: rgba(8, 26, 48, .7);
+      border: 1px solid var(--glass-line);
+      border-radius: 22px;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, .35);
+    }
+
+    .dash-search-bar input,
+    .dash-search-bar select {
+      transition: box-shadow .25s, border-color .25s
+    }
+
+    .dash-search-bar input:focus,
+    .dash-search-bar select:focus {
+      outline: none;
+      border-color: var(--tide);
+      box-shadow: 0 0 0 3px rgba(143, 233, 255, .18)
+    }
+
+    .dash-search-btn {
+      background: linear-gradient(135deg, var(--tide), var(--tide-2));
+      color: #04202e;
+      font-weight: 800;
+      border-radius: 14px;
+      transition: transform .25s, box-shadow .25s
+    }
+
+    .dash-search-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 26px rgba(79, 195, 217, .45)
+    }
+
+    /* Property cards */
+    .prop-card {
+      background: linear-gradient(160deg, rgba(255, 255, 255, .07), rgba(255, 255, 255, .015));
+      border: 1px solid var(--glass-line);
+      border-radius: 22px;
+      overflow: hidden;
+      transition: transform .4s cubic-bezier(.2, .8, .2, 1), box-shadow .4s, border-color .4s;
+    }
+
+    .prop-card:hover {
+      transform: translateY(-8px);
+      border-color: rgba(143, 233, 255, .45);
+      box-shadow: 0 28px 60px rgba(0, 0, 0, .5), 0 0 40px rgba(79, 195, 217, .12)
+    }
+
+    .prop-img-wrap {
+      overflow: hidden
+    }
+
+    .prop-img-wrap img {
+      transition: transform .8s cubic-bezier(.2, .8, .2, 1)
+    }
+
+    .prop-card:hover .prop-img-wrap img {
+      transform: scale(1.12)
+    }
+
+    .prop-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--tide), var(--tide-2)) !important;
+      color: #04202e !important;
+      font-weight: 700;
+      border: 0
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 10px 26px rgba(79, 195, 217, .45)
+    }
+
+    /* Map panel */
+    #konkan-map {
+      height: 560px;
+      border-radius: 20px;
+      border: 1px solid rgba(143, 233, 255, .25);
+      box-shadow: 0 30px 70px rgba(0, 0, 0, .5), inset 0 0 60px rgba(79, 195, 217, .08);
+      overflow: hidden
+    }
+
+    .glass-card,
+    .dash-card {
+      background: var(--glass);
+      border: 1px solid var(--glass-line);
+      border-radius: 22px;
+      backdrop-filter: blur(12px)
+    }
+
+    /* Tables */
+    .dash-table tbody tr {
+      transition: background .2s
+    }
+
+    .dash-table tbody tr:hover {
+      background: rgba(143, 233, 255, .05)
+    }
+
+    /* Modal */
+    .modal-overlay {
+      backdrop-filter: blur(10px)
+    }
+
+    .modal-content {
+      background: linear-gradient(160deg, #0c2342, #061428);
+      border: 1px solid rgba(143, 233, 255, .2);
+      border-radius: 24px;
+      box-shadow: 0 40px 90px rgba(0, 0, 0, .6)
+    }
+
+    #dash-toast {
+      position: fixed;
+      right: 1.5rem;
+      bottom: 1.5rem;
+      background: rgba(8, 26, 48, .95);
+      color: #fff;
+      padding: .9rem 1.3rem;
+      border-radius: 14px;
+      border: 1px solid rgba(143, 233, 255, .3);
+      transform: translateY(80px);
+      opacity: 0;
+      transition: .4s;
+      z-index: 9999
+    }
+
+    /* Panel switch + one page-load moment */
+    .dashboard-panel.active {
+      animation: panel-in .5s ease both
+    }
+
+    @keyframes panel-in {
+      from {
+        opacity: 0;
+        transform: translateY(14px)
+      }
+    }
+
+    ::-webkit-scrollbar {
+      width: 8px
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: rgba(143, 233, 255, .25);
+      border-radius: 8px
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--tide);
+      outline-offset: 2px
+    }
+
+    @media(prefers-reduced-motion:reduce) {
+      * {
+        animation: none !important;
+        transition: none !important
+      }
+    }
+
+    @media(max-width:768px) {
+      #konkan-map {
+        height: 420px
+      }
+    }
+  </style>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "firebase/app": "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js",
+        "firebase/auth": "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js",
+        "firebase/firestore": "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js"
+      }
+    }
+  </script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- Leaflet and CARTO tiles removed: the map is now an animated SVG (konkanMap.js) -->
 </head>
+
 <body class="dashboard-page">
 
   <div class="dashboard-container">
-    
-    <!-- Sidebar -->
+
     <aside class="dashboard-sidebar">
       <div class="sidebar-header">
         <a href="../index.html" class="sidebar-logo">
           <div class="sidebar-logo-icon"><img src="../assets/images/konkanstay-mark.svg" alt=""></div>
-          <span class="sidebar-logo-name">KonkanStay</span>
+          <div>
+            <span class="sidebar-logo-name">KonkanStay</span>
+            <span class="sidebar-logo-tag">Traveler Portal</span>
+          </div>
         </a>
       </div>
-      
+
       <div class="sidebar-user">
-        <div class="sidebar-user-name" id="user-name-display">Loading...</div>
-        <div class="sidebar-user-type">Customer</div>
+        <div class="sidebar-user-avatar" id="user-avatar-initials">T</div>
+        <div>
+          <div class="sidebar-user-name" id="user-name-display">Loading...</div>
+          <div class="sidebar-user-type"><span class="role-badge customer">🌊 Traveler</span></div>
+        </div>
       </div>
 
       <nav class="sidebar-nav">
         <ul>
           <li><a href="#" class="active" data-target="panel-browse">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            Browse Stays
-          </a></li>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+              Browse Stays
+            </a></li>
           <li><a href="#" data-target="panel-map">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><line x1="8" y1="2" x2="8" y2="18"></line><line x1="16" y1="6" x2="16" y2="22"></line></svg>
-            Explore Map
-          </a></li>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6" />
+                <line x1="8" y1="2" x2="8" y2="18" />
+                <line x1="16" y1="6" x2="16" y2="22" />
+              </svg>
+              Explore Map
+            </a></li>
           <li><a href="#" data-target="panel-bookings">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-            My Bookings
-          </a></li>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                <line x1="16" y1="2" x2="16" y2="6" />
+                <line x1="8" y1="2" x2="8" y2="6" />
+                <line x1="3" y1="10" x2="21" y2="10" />
+              </svg>
+              My Bookings
+            </a></li>
         </ul>
       </nav>
 
       <div class="sidebar-footer">
-        <button class="btn btn-outline-white" id="btn-logout" style="width: 100%;">Logout</button>
+        <a href="search.html" class="sidebar-footer-link">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+          Full Search
+        </a>
+        <button class="btn btn-outline-white" id="btn-logout" style="width:100%;margin-top:0.5rem;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+            <polyline points="16 17 21 12 16 7" />
+            <line x1="21" y1="12" x2="9" y2="12" />
+          </svg>
+          Sign Out
+        </button>
       </div>
     </aside>
 
-    <!-- Main Content -->
     <main class="dashboard-main">
-      
-      <!-- Browse Panel -->
+
       <div class="dashboard-panel active" id="panel-browse">
         <header class="dashboard-header">
-          <h1 class="dashboard-title">Discover your next escape</h1>
-          <p class="dashboard-subtitle">Find and book beautiful stays along the Konkan coast.</p>
+          <div class="dashboard-header-inner">
+            <div>
+              <div class="dashboard-breadcrumb">Discover</div>
+              <h1 class="dashboard-title">Find your coastal escape</h1>
+              <p class="dashboard-subtitle">Browse beautiful stays along the Konkan coast.</p>
+            </div>
+            <a href="search.html" class="btn btn-primary">
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+              Full Search
+            </a>
+          </div>
         </header>
 
         <div class="stat-grid" style="grid-template-columns: repeat(auto-fit, minmax(160px,1fr));">
-          <div class="stat-card">
+          <div class="stat-card stat-card--props">
+            <div class="stat-card-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+              </svg>
+            </div>
             <span class="stat-title">Available Stays</span>
             <span class="stat-value" id="cust-total-props">0</span>
-            <svg class="stat-icon" xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+            <span class="stat-change positive">Ready to book</span>
           </div>
           <div class="stat-card">
+            <div class="stat-card-icon">🏖️</div>
             <span class="stat-title">Destinations</span>
             <span class="stat-value">6</span>
-            <svg class="stat-icon" xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path></svg>
+            <span class="stat-change">Konkan locations</span>
           </div>
-          <div class="stat-card">
+          <div class="stat-card stat-card--revenue">
+            <div class="stat-card-icon">₹</div>
             <span class="stat-title">Avg. Price / Night</span>
             <span class="stat-value" id="cust-avg-price">₹0</span>
-            <svg class="stat-icon" xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+            <span class="stat-change">All properties</span>
           </div>
         </div>
 
@@ -87,53 +450,48 @@
               <option value="">Anywhere</option>
               <option value="Alibaug">Alibaug</option>
               <option value="Kashid">Kashid</option>
+              <option value="Murud">Murud</option>
               <option value="Dapoli">Dapoli</option>
               <option value="Malvan">Malvan</option>
               <option value="Tarkarli">Tarkarli</option>
             </select>
           </div>
-          <div class="form-group">
-            <label>Check-in</label>
-            <input type="date" id="filter-checkin">
+          <div class="form-group"><label>Check-in</label><input type="date" id="filter-checkin"></div>
+          <div class="form-group"><label>Check-out</label><input type="date" id="filter-checkout"></div>
+          <div class="form-group"><label>Guests</label><input type="number" id="filter-guests" placeholder="1" min="1">
           </div>
-          <div class="form-group">
-            <label>Check-out</label>
-            <input type="date" id="filter-checkout">
-          </div>
-          <div class="form-group">
-            <label>Guests</label>
-            <input type="number" id="filter-guests" placeholder="1" min="1">
-          </div>
-          <button type="submit" class="dash-search-btn">Search</button>
+          <button type="submit" class="dash-search-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+            Search
+          </button>
         </form>
 
-        <div class="prop-grid" id="customer-prop-grid">
-          <!-- Properties injected via JS -->
-        </div>
+        <div class="prop-grid" id="customer-prop-grid"></div>
       </div>
 
-      <!-- Explore Map Panel -->
       <div class="dashboard-panel" id="panel-map">
         <header class="dashboard-header">
+          <div class="dashboard-breadcrumb">Explore</div>
           <h1 class="dashboard-title">Explore on Map</h1>
-          <p class="dashboard-subtitle">Click any marker to view property details.</p>
+          <p class="dashboard-subtitle">Tap any glowing price pin to preview a stay.</p>
         </header>
         <div class="map-container" id="konkan-map"></div>
-        <div class="glass-card">
-          <h3 style="margin-bottom: 1.5rem; color: var(--clr-navy);">Price by Location</h3>
-          <div class="chart-container" style="height: 280px;">
-            <canvas id="priceChart"></canvas>
-          </div>
+        <div class="glass-card" style="margin-top:1.5rem;">
+          <h3 style="margin-bottom:1.5rem;color:#fff;font-size:1.1rem;font-weight:700;">Avg. Price by Location</h3>
+          <div class="chart-container" style="height:280px;"><canvas id="priceChart"></canvas></div>
         </div>
       </div>
 
-      <!-- Bookings Panel -->
       <div class="dashboard-panel" id="panel-bookings">
         <header class="dashboard-header">
+          <div class="dashboard-breadcrumb">Bookings</div>
           <h1 class="dashboard-title">My Bookings</h1>
-          <p class="dashboard-subtitle">Manage your upcoming and past trips.</p>
+          <p class="dashboard-subtitle">Manage your upcoming and past coastal trips.</p>
         </header>
-
         <div class="dash-card">
           <div class="dash-table-wrap">
             <table class="dash-table">
@@ -147,9 +505,7 @@
                   <th>Confirmation</th>
                 </tr>
               </thead>
-              <tbody id="my-bookings-list">
-                <!-- Bookings injected via JS -->
-              </tbody>
+              <tbody id="my-bookings-list"></tbody>
             </table>
           </div>
         </div>
@@ -158,38 +514,43 @@
     </main>
   </div>
 
-  <!-- Property Details Modal -->
   <div class="modal-overlay" id="property-modal">
-    <div class="modal-content" style="max-width: 800px;">
+    <div class="modal-content" style="max-width:800px;">
       <div class="modal-close" id="close-property-modal">&times;</div>
-      <div class="prop-modal-header" style="margin-bottom: 1.5rem;">
-        <h2 id="detail-title" style="font-family: var(--font-heading); color: var(--clr-navy); font-size: 2rem;">Property Title</h2>
-        <p id="detail-loc" style="color: var(--clr-text-mid); font-size: 0.95rem;">Location</p>
+      <div style="margin-bottom:1.5rem;">
+        <h2 id="detail-title"
+          style="font-family:'Playfair Display',serif;color:#fff;font-size:1.85rem;font-weight:700;margin-bottom:0.3rem;">
+          Property Title</h2>
+        <p id="detail-loc" style="color:rgba(255,255,255,0.45);font-size:0.95rem;">Location</p>
       </div>
-
-      <div class="prop-modal-gallery" id="detail-gallery" style="display: flex; gap: 0.5rem; overflow-x: auto; margin-bottom: 1.5rem; height: 250px;">
-        <!-- Images injected here -->
+      <div id="detail-gallery"
+        style="display:flex;gap:0.5rem;overflow-x:auto;margin-bottom:1.5rem;height:240px;border-radius:var(--radius-md);overflow:hidden;">
       </div>
-
-      <div class="prop-modal-details-layout" style="display: flex; gap: 2rem;">
-        <div style="flex: 2;">
-          <h3 style="margin-bottom: 0.5rem; color: var(--clr-navy);">About this stay</h3>
-          <p id="detail-desc" style="color: var(--clr-text-mid); line-height: 1.6; margin-bottom: 1.5rem;">Description goes here.</p>
-          
-          <h3 style="margin-bottom: 0.5rem; color: var(--clr-navy);">Host Details</h3>
-          <div style="background: var(--clr-cream); padding: 1rem; border-radius: var(--radius-md);">
-            <p style="margin-bottom: 0.25rem;"><strong>Name:</strong> <span id="detail-host-name">Host Name</span></p>
-            <p style="margin-bottom: 0.25rem;"><strong>Email:</strong> <span id="detail-host-email">host@example.com</span></p>
-            <p><strong>Phone:</strong> <span id="detail-host-phone">+91 00000 00000</span></p>
+      <div style="display:flex;gap:2rem;flex-wrap:wrap;">
+        <div style="flex:2;min-width:220px;">
+          <h3 style="margin-bottom:0.5rem;color:#fff;font-size:1rem;font-weight:700;">About this stay</h3>
+          <p id="detail-desc"
+            style="color:rgba(255,255,255,0.55);line-height:1.7;margin-bottom:1.5rem;font-size:0.9rem;"></p>
+          <h3 style="margin-bottom:0.5rem;color:#fff;font-size:1rem;font-weight:700;">Host Details</h3>
+          <div
+            style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);padding:1rem;border-radius:var(--radius-md);">
+            <p style="margin-bottom:0.3rem;font-size:0.88rem;color:rgba(255,255,255,0.6);"><strong
+                style="color:rgba(255,255,255,0.85);">Name:</strong> <span id="detail-host-name"></span></p>
+            <p style="margin-bottom:0.3rem;font-size:0.88rem;color:rgba(255,255,255,0.6);"><strong
+                style="color:rgba(255,255,255,0.85);">Email:</strong> <span id="detail-host-email"></span></p>
+            <p style="font-size:0.88rem;color:rgba(255,255,255,0.6);"><strong
+                style="color:rgba(255,255,255,0.85);">Phone:</strong> <span id="detail-host-phone"></span></p>
           </div>
         </div>
-
-        <div style="flex: 1; background: var(--clr-cream); padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid rgba(0,0,0,0.05); height: fit-content;">
-          <div style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; color: var(--clr-navy);">
-            <span id="detail-price">₹0</span> <span style="font-size: 0.9rem; font-weight: 400; color: var(--clr-text-mid);">/ night</span>
+        <div
+          style="flex:1;min-width:200px;background:rgba(143,233,255,0.07);border:1px solid rgba(143,233,255,0.22);padding:1.5rem;border-radius:var(--radius-md);height:fit-content;">
+          <div style="font-size:1.5rem;font-weight:800;margin-bottom:0.5rem;color:#fff;">
+            <span id="detail-price">₹0</span> <span
+              style="font-size:0.9rem;font-weight:400;color:rgba(255,255,255,0.4);">/ night</span>
           </div>
-          <p style="margin-bottom: 1.5rem; font-size: 0.9rem; color: var(--clr-text-mid);">Maximum <span id="detail-guests">0</span> guests allowed.</p>
-          <button class="btn btn-primary btn-block" id="btn-proceed-book">Book Now</button>
+          <p style="margin-bottom:1.5rem;font-size:0.88rem;color:rgba(255,255,255,0.45);">Max <span
+              id="detail-guests">0</span> guests</p>
+          <button class="btn btn-primary" style="width:100%;" id="btn-proceed-book">Book Now →</button>
         </div>
       </div>
     </div>
@@ -197,4 +558,5 @@
 
   <script type="module" src="../assets/js/dashboard.js"></script>
 </body>
+
 </html>
