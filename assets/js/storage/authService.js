@@ -1,6 +1,6 @@
 /**
  * LocalStorage Authentication Service for KonkanStay Platform.
- * Fully replaces Firebase Authentication with zero external network dependencies.
+ * Pure browser-based authentication with zero external network dependencies.
  */
 
 import {
