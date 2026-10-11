@@ -7,8 +7,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "test": "node --test tests/bookingUtils.test.mjs",
-    "test:all": "node --test tests/bookingUtils.test.mjs && node --test tests/localStorage.test.mjs",
+    "test": "node --test tests/bookingUtils.test.mjs tests/localStorage.test.mjs",
     "test:storage": "node --test tests/localStorage.test.mjs"
   },
   "keywords": [],
