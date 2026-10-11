@@ -1,6 +1,6 @@
 /**
  * LocalStorage Data Service for KonkanStay Platform.
- * Fully replaces Cloud Firestore with persistent, fast, offline-ready browser storage.
+ * Persistent, fast, offline-ready browser storage for properties and bookings.
  */
 
 import {
