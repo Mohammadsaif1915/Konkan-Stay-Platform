@@ -2,7 +2,7 @@
  * KonkanStay — main.js
  * Landing Page JavaScript | Stage 1
  */
-import { subscribeToAuthChanges, logoutUser, getUserProfile } from './firebase/authService.js';
+import { subscribeToAuthChanges, logoutUser, getUserProfile } from './storage/authService.js';
 import { escapeHtml, getLocalDateString } from './bookingUtils.mjs';
 
 // ── DOM Ready ──────────────────────────────────────────────────────────────
@@ -177,8 +177,8 @@ function initSearchDates() {
   const navActions    = document.getElementById('nav-actions');
   const mobileActions = document.getElementById('mobile-nav-actions');
   const isPagesRoute  = window.location.pathname.split('/').includes('pages');
-  const pagePrefix    = isPagesRoute ? '' : 'pages/';
-  const homeHref      = isPagesRoute ? '../index.html' : 'index.html';
+  const pagePrefix    = isPagesRoute ? '../' : 'pages/';
+  const homeHref      = isPagesRoute ? '../../index.html' : 'index.html';
   const hostCtaHref   = `${homeHref}#host-cta`;
 
   function getInitials(str) {
@@ -191,8 +191,8 @@ function initSearchDates() {
     const displayName = profile?.username || profile?.fullname || user.email.split('@')[0];
     const initials    = getInitials(displayName);
     const role        = profile?.userType || 'customer';
-    const dashHref    = `${pagePrefix}${role === 'host' ? 'dashboard-host.html' : 'dashboard-customer.html'}`;
-    const searchHref  = `${pagePrefix}search.html`;
+    const dashHref    = `${pagePrefix}${role === 'host' ? 'dashboard-host/dashboard-host.html' : 'dashboard-customer/dashboard-customer.html'}`;
+    const searchHref  = `${pagePrefix}search/search.html`;
     const shortName   = displayName.length > 14 ? displayName.slice(0, 13) + '…' : displayName;
 
     // ── Desktop ────────────────────────────────────────────────
@@ -274,12 +274,12 @@ function initSearchDates() {
   function renderLoggedOut() {
     if (navActions) {
       navActions.innerHTML = `
-        <a href="${pagePrefix}login.html" class="btn-nav-login">Login</a>
+        <a href="${pagePrefix}login/login.html" class="btn-nav-login">Login</a>
         <a href="${hostCtaHref}" class="btn-nav-host">List Your Property</a>`;
     }
     if (mobileActions) {
       mobileActions.innerHTML = `
-        <a href="${pagePrefix}login.html" class="btn-mobile-full btn-mobile-login">Login</a>
+        <a href="${pagePrefix}login/login.html" class="btn-mobile-full btn-mobile-login">Login</a>
         <a href="${hostCtaHref}" class="btn-mobile-full btn-mobile-host">List Your Property</a>`;
     }
   }

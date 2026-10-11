@@ -222,7 +222,7 @@ export function renderKonkanMap(el, props, onOpen) {
     const i = +g.dataset.i, p = list[i], [x, y] = spots[i], w = 380, h = w * H / W;
     fly([x - w * .4, y - h / 2, w, h], 1100);
     const card = document.createElement('div'); card.className = 'km-panel';
-    card.innerHTML = `<span class="km-x">&times;</span><img src="${escapeHtml(p.image || '../assets/images/destinations/alibaug.avif')}" onerror="this.src='../assets/images/destinations/alibaug.avif'" alt="">
+    card.innerHTML = `<span class="km-x">&times;</span><img src="${escapeHtml(p.image || '../../assets/images/destinations/alibaug.avif')}" onerror="this.src='../../assets/images/destinations/alibaug.avif'" alt="">
       <div class="b"><b>${escapeHtml(p.title)}</b><small>📍 ${escapeHtml(p.location)} · ${Number(p.guests) || 0} guests · ${Number(p.bedrooms) || 0} bedrooms</small>
       <div class="pr">₹${Number(p.price || 0).toLocaleString('en-IN')} <small>/ night</small></div><button type="button" class="go">View &amp; Book</button></div>`;
     card.querySelector('.km-x').onclick = () => { closePanel(); fly(home); };

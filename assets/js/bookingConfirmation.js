@@ -14,7 +14,7 @@ export function printReservationConfirmation(booking) {
       ? escapeHtml(value)
       : date.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
   };
-  const markUrl = new URL('../assets/images/konkanstay-mark.svg', window.location.href).href;
+  const markUrl = new URL('../../assets/images/konkanstay-mark.svg', window.location.href).href;
   const heading = isDemo ? 'Demo booking confirmed' : 'Reservation confirmed';
   const message = isDemo
     ? 'This is a local demonstration only. No payment was taken and this is not a real reservation.'

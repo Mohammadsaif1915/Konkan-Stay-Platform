@@ -1,9 +1,7 @@
-import { subscribeToAuthChanges, getUserProfile, logoutUser } from './firebase/authService.js';
-import { getProperties, getPropertiesByHost, addProperty, getBookingsByCustomer, getBookingsByHost, updateBookingStatus, getPropertyOccupiedNights } from './firebase/firestoreService.js';
+import { subscribeToAuthChanges, getUserProfile, logoutUser } from './storage/authService.js';
+import { getProperties, getPropertiesByHost, addProperty, getBookingsByCustomer, getBookingsByHost, updateBookingStatus, getPropertyOccupiedNights, setHostBlockedDates } from './storage/storageService.js';
 import { escapeHtml } from './bookingUtils.mjs';
-import { db } from './firebase/config.js';
 import { renderKonkanMap } from './konkanMap.js';
-import { doc, setDoc, deleteDoc } from 'firebase/firestore';
 import { mountBookingWizard, initBookingWizard, openBookingWizard } from './bookingWizard.js';
 
 // ── Compress image to base64 ─────────────────────────────────────────────────
@@ -44,8 +42,8 @@ const hardcodedProperties = [
     bedrooms: 4,
     description: 'A stunning sea-facing villa perched on the cliffs of Alibaug. Wake up to breathtaking ocean views, enjoy private beach access, and unwind in the infinity pool. Just 2 hours from Mumbai — your perfect coastal escape.',
     amenities: ['Pool', 'Beach Access', 'Sea View', 'WiFi', 'AC', 'Kitchen', 'Free Parking'],
-    images: ['../assets/images/stays/sea-view-villa.jpg'],
-    image: '../assets/images/stays/sea-view-villa.jpg',
+    images: ['../../assets/images/stays/sea-view-villa.jpg'],
+    image: '../../assets/images/stays/sea-view-villa.jpg',
     lat: 18.648, lng: 72.872,
     isPublic: true,
     isHardcoded: true,
@@ -62,8 +60,8 @@ const hardcodedProperties = [
     bedrooms: 3,
     description: 'Step directly onto the famous white sands of Kashid from this beautiful beach house. Designed with local Konkan aesthetics and modern comforts — ideal for a family holiday or a friends getaway.',
     amenities: ['Beach Access', 'Sea View', 'WiFi', 'BBQ Grill', 'Free Parking', 'Hot Water'],
-    images: ['../assets/images/stay-types/beach-houses.jpg'],
-    image: '../assets/images/stay-types/beach-houses.jpg',
+    images: ['../../assets/images/stay-types/beach-houses.jpg'],
+    image: '../../assets/images/stay-types/beach-houses.jpg',
     lat: 18.305, lng: 72.967,
     isPublic: true,
     isHardcoded: true,
@@ -80,8 +78,8 @@ const hardcodedProperties = [
     bedrooms: 2,
     description: 'A charming cottage nestled among coconut palms, 5 minutes from Tarkarli\'s pristine beach. Perfect for couples or a small family. Snorkeling and dolphin spotting tours available nearby.',
     amenities: ['Beach Access', 'WiFi', 'Kitchen', 'Sea View', 'Caretaker'],
-    images: ['../assets/images/stays/coastal-escape.jpg'],
-    image: '../assets/images/stays/coastal-escape.jpg',
+    images: ['../../assets/images/stays/coastal-escape.jpg'],
+    image: '../../assets/images/stays/coastal-escape.jpg',
     lat: 16.020, lng: 73.461,
     isPublic: true,
     isHardcoded: true,
@@ -98,8 +96,8 @@ const hardcodedProperties = [
     bedrooms: 6,
     description: 'A sprawling farmhouse surrounded by mango orchards in lush Dapoli. Perfect for large family reunions, corporate retreats, or celebrations. Bonfire area, spacious lawns, and a fully equipped kitchen.',
     amenities: ['Kitchen', 'BBQ Grill', 'Free Parking', 'Pet Friendly', 'WiFi', 'Bonfire', 'Caretaker'],
-    images: ['../assets/images/stays/konkan-garden-retreat.jpg'],
-    image: '../assets/images/stays/konkan-garden-retreat.jpg',
+    images: ['../../assets/images/stays/konkan-garden-retreat.jpg'],
+    image: '../../assets/images/stays/konkan-garden-retreat.jpg',
     lat: 17.757, lng: 73.189,
     isPublic: true,
     isHardcoded: true,
@@ -116,8 +114,8 @@ const hardcodedProperties = [
     bedrooms: 5,
     description: 'An elegant heritage villa with Indo-Portuguese architecture in the heart of Malvan. Minutes from Sindhudurg Fort, local fish markets, and the famous Malvan seafood cuisine. Authentic Konkan experience guaranteed.',
     amenities: ['Pool', 'AC', 'Kitchen', 'Free Parking', 'WiFi', 'Caretaker', 'Hot Water'],
-    images: ['../assets/images/stay-types/villas.jpg'],
-    image: '../assets/images/stay-types/villas.jpg',
+    images: ['../../assets/images/stay-types/villas.jpg'],
+    image: '../../assets/images/stay-types/villas.jpg',
     lat: 16.060, lng: 73.471,
     isPublic: true,
     isHardcoded: true,
@@ -134,8 +132,8 @@ const hardcodedProperties = [
     bedrooms: 3,
     description: 'Wake up to iconic views of Janjira Fort from this beautifully restored colonial bungalow. Peaceful, spacious, and steeped in history — ideal for history lovers and beach enthusiasts alike.',
     amenities: ['Sea View', 'Beach Access', 'WiFi', 'Kitchen', 'Free Parking', 'Hot Water'],
-    images: ['../assets/images/stay-types/bunglows.jpg'],
-    image: '../assets/images/stay-types/bunglows.jpg',
+    images: ['../../assets/images/stay-types/bunglows.jpg'],
+    image: '../../assets/images/stay-types/bunglows.jpg',
     lat: 18.324, lng: 72.960,
     isPublic: true,
     isHardcoded: true,
@@ -166,7 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ─── AUTH CHECK ──────────────────────────────────────────────────────────
   async function handleAuthChange(user) {
     if (!user) {
-      window.location.href = 'login.html';
+      window.location.href = '../login/login.html';
       return;
     }
 
@@ -186,9 +184,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const isHostPage = window.location.href.includes('dashboard-host');
     if (currentUser.userType === 'host' && !isHostPage) {
-      window.location.href = 'dashboard-host.html'; return;
+      window.location.href = '../dashboard-host/dashboard-host.html'; return;
     } else if (currentUser.userType !== 'host' && isHostPage) {
-      window.location.href = 'dashboard-customer.html'; return;
+      window.location.href = '../dashboard-customer/dashboard-customer.html'; return;
     }
 
     const nameDisplay = document.getElementById('user-name-display');
@@ -206,7 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('btn-logout')?.addEventListener('click', async () => {
     await logoutUser();
-    window.location.href = '../index.html';
+    window.location.href = '../../index.html';
   });
 
   // ─── SIDEBAR NAVIGATION ──────────────────────────────────────────────────
@@ -227,12 +225,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // ─── DATA LOADING ────────────────────────────────────────────────────────
   async function loadInitialData() {
     if (currentUser.userType === 'host') {
-      if (isHardcodedHost) {
+      properties = await getPropertiesByHost(currentUser.email);
+      bookings = await getBookingsByHost(currentUser.email);
+      if (isHardcodedHost && properties.length === 0) {
         properties = hardcodedProperties;
-        bookings = [];
-      } else {
-        properties = await getPropertiesByHost(currentUser.email);
-        bookings = await getBookingsByHost(currentUser.email);
       }
       initHostLogic();
     } else {
@@ -284,9 +280,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
       card.innerHTML = `
         <div class="prop-img-wrap" style="height:195px;position:relative;">
-          <img src="${escapeHtml(prop.image || prop.images?.[0] || '../assets/images/destinations/alibaug.avif')}" 
+          <img src="${escapeHtml(prop.image || prop.images?.[0] || '../../assets/images/destinations/alibaug.avif')}" 
                alt="${escapeHtml(prop.title)}" 
-               onerror="this.src='../assets/images/destinations/alibaug.avif'" 
+               onerror="this.src='../../assets/images/destinations/alibaug.avif'" 
                style="width:100%;height:100%;object-fit:cover;">
           <div style="position:absolute;top:0.7rem;right:0.7rem;background:rgba(10,18,36,0.85);backdrop-filter:blur(6px);padding:0.3rem 0.7rem;border-radius:20px;font-weight:700;font-size:0.82rem;color:#fff;">₹${Number(prop.price || 0).toLocaleString('en-IN')}/night</div>
           <div style="position:absolute;top:0.7rem;left:0.7rem;background:rgba(10,18,36,0.75);backdrop-filter:blur(6px);padding:0.25rem 0.6rem;border-radius:20px;font-size:0.7rem;font-weight:600;color:rgba(255,255,255,0.8);">${escapeHtml(prop.type || 'Stay')}</div>
@@ -413,8 +409,8 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('detail-guests').textContent = prop.guests || 0;
 
       const gallery = document.getElementById('detail-gallery');
-      const imgs = prop.images?.length > 0 ? prop.images : [prop.image || '../assets/images/destinations/alibaug.avif'];
-      gallery.innerHTML = imgs.map(i => `<img src="${escapeHtml(i)}" onerror="this.src='../assets/images/destinations/alibaug.avif'" style="height:100%;border-radius:8px;object-fit:cover;min-width:280px;flex-shrink:0;">`).join('');
+      const imgs = prop.images?.length > 0 ? prop.images : [prop.image || '../../assets/images/destinations/alibaug.avif'];
+      gallery.innerHTML = imgs.map(i => `<img src="${escapeHtml(i)}" onerror="this.src='../../assets/images/destinations/alibaug.avif'" style="height:100%;border-radius:8px;object-fit:cover;min-width:280px;flex-shrink:0;">`).join('');
 
       document.getElementById('detail-host-name').textContent = prop.isHardcoded ? 'KonkanStay Verified Host' : 'KonkanStay Host';
       document.getElementById('detail-host-email').textContent = prop.hostEmail || 'Contact via KonkanStay';
@@ -604,7 +600,7 @@ document.addEventListener('DOMContentLoaded', () => {
           bedrooms: parseInt(bedrooms) || 0,
           amenities,
           images: imgs,
-          image: imgs[0] || '../assets/images/stays/sea-view-villa.jpg',
+          image: imgs[0] || '../../assets/images/stays/sea-view-villa.jpg',
           description: desc,
           upiId, qrCode: qrBase64, bankAcc, bankIfsc,
           ...(locationCoords[location] || {})
@@ -729,9 +725,9 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.className = 'avail-prop-btn';
       btn.dataset.propId = prop.id;
       btn.dataset.propName = prop.title;
-      const img = prop.image || prop.images?.[0] || '../assets/images/destinations/alibaug.avif';
+      const img = prop.image || prop.images?.[0] || '../../assets/images/destinations/alibaug.avif';
       btn.innerHTML = `
-        <img class="avail-prop-btn-img" src="${escapeHtml(img)}" onerror="this.src='../assets/images/destinations/alibaug.avif'" alt="">
+        <img class="avail-prop-btn-img" src="${escapeHtml(img)}" onerror="this.src='../../assets/images/destinations/alibaug.avif'" alt="">
         <div>
           <div style="font-size:0.85rem;font-weight:600;color:rgba(255,255,255,0.85);line-height:1.2;">${escapeHtml(prop.title)}</div>
           <div style="font-size:0.72rem;color:rgba(255,255,255,0.35);margin-top:1px;">📍 ${escapeHtml(prop.location)}</div>
@@ -814,22 +810,10 @@ document.addEventListener('DOMContentLoaded', () => {
     else dates.forEach(d => blockedDates[selectedAvailPropId].delete(d));
 
     try {
-      if (isHardcodedHost) {
-        const allBlocked = getHardcodedAvailability();
-        allBlocked[selectedAvailPropId] = [...blockedDates[selectedAvailPropId]];
-        saveHardcodedAvailability(allBlocked);
-      } else {
-        const batch = [];
-        for (const date of dates) {
-          const docRef = doc(db, 'properties', selectedAvailPropId, 'hostBlocked', date);
-          if (action === 'block') {
-            batch.push(setDoc(docRef, { date, blockedByHost: true, createdAt: new Date().toISOString() }));
-          } else {
-            batch.push(deleteDoc(docRef));
-          }
-        }
-        await Promise.all(batch);
-      }
+      await setHostBlockedDates(selectedAvailPropId, dates, action);
+      const allBlocked = getHardcodedAvailability();
+      allBlocked[selectedAvailPropId] = [...blockedDates[selectedAvailPropId]];
+      saveHardcodedAvailability(allBlocked);
       showAvailStatus(`${dates.length} date${dates.length > 1 ? 's' : ''} ${action === 'block' ? 'blocked' : 'unblocked'} successfully! ✓`, 'success');
     } catch (err) {
       console.error('[KonkanStay] Availability update failed:', err);
@@ -931,7 +915,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const printWindow = window.open('', '_blank', 'popup,width=820,height=900');
     if (!printWindow) { alert('Allow pop-ups to print your reservation confirmation.'); return; }
     const formatDate = v => { const d = new Date(`${v}T00:00:00`); return isNaN(d.getTime()) ? v : d.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }); };
-    const markUrl = new URL('../assets/images/konkanstay-mark.svg', window.location.href).href;
+    const markUrl = new URL('../../assets/images/konkanstay-mark.svg', window.location.href).href;
     printWindow.document.write(`<!doctype html><html lang="en"><head><meta charset="utf-8"><title>KonkanStay Reservation</title><style>@page{size:A4;margin:0}*{box-sizing:border-box}body{margin:0;background:#f2f0e8;color:#193435;font-family:Georgia,serif}.sheet{width:210mm;min-height:297mm;margin:0 auto;padding:22mm 20mm;background:#fbfaf6}.top{display:flex;align-items:center;gap:12px;padding-bottom:22px;border-bottom:2px solid #174f4d}.brand{font-size:23px;font-weight:700;color:#174f4d}.tag{font:11px Arial,sans-serif;letter-spacing:1.5px;color:#687878}.eyebrow{margin-top:38px;color:#b57843;font:700 11px Arial,sans-serif;letter-spacing:2px;text-transform:uppercase}h1{margin:8px 0 12px;font-size:36px;font-weight:500;color:#174f4d}.status{display:inline-block;margin:22px 0;padding:8px 12px;border-radius:4px;background:#e3f1e9;color:#286247;font:700 11px Arial,sans-serif;letter-spacing:1px;text-transform:uppercase}.property{padding:22px 0;border-top:1px solid #d9dfd7;border-bottom:1px solid #d9dfd7}.property h2{margin:0 0 5px;font-size:24px;font-weight:500}.grid{display:grid;grid-template-columns:1fr 1fr;gap:22px 36px;padding:25px 0}.label{display:block;margin-bottom:5px;color:#788483;font:700 10px Arial,sans-serif;letter-spacing:1.2px;text-transform:uppercase}.value{font:16px Arial,sans-serif;color:#193435}.total{display:flex;justify-content:space-between;align-items:center;margin-top:8px;padding:17px 0;border-top:1px solid #d9dfd7;border-bottom:1px solid #d9dfd7}.total strong{font:700 20px Arial,sans-serif;color:#174f4d}.code{margin-top:25px;color:#687878;font:12px Arial,sans-serif}.note{margin-top:42px;padding-top:14px;border-top:1px solid #d9dfd7;color:#77817e;font:11px/1.6 Arial,sans-serif}@media print{body{background:#fff}.sheet{margin:0;box-shadow:none}}</style></head><body><main class="sheet"><header class="top"><img src="${markUrl}" alt="" width="42" height="42"><div><div class="brand">KonkanStay</div><div class="tag">COASTAL ESCAPES</div></div></header><div class="eyebrow">Your Konkan journey</div><h1>Reservation confirmed</h1><div class="status">Host confirmed</div><section class="property"><h2>${escapeHtml(booking.propTitle)}</h2><p>${escapeHtml(booking.propLocation)} · Konkan, Maharashtra</p></section><section class="grid"><div><span class="label">Check-in</span><span class="value">${formatDate(booking.checkin)}</span></div><div><span class="label">Check-out</span><span class="value">${formatDate(booking.checkout)}</span></div><div><span class="label">Guests</span><span class="value">${Number(booking.guests) || 0}</span></div><div><span class="label">Nights</span><span class="value">${Number(booking.nights) || 0}</span></div></section><div class="total"><span>Stay total</span><strong>₹${Number(booking.totalPrice || 0).toLocaleString('en-IN')}</strong></div><p class="code">Confirmation: ${escapeHtml(booking.id)}</p><p class="note">KonkanStay does not process or verify payments. This is a reservation confirmation only, not a tax invoice or payment receipt.</p></main><script>window.addEventListener('load',()=>{window.focus();window.print();});<\/script></body></html>`);
     printWindow.document.close();
   }

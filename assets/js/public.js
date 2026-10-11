@@ -1,7 +1,5 @@
-import { getProperties, getPropertyOccupiedNights } from './firebase/firestoreService.js';
-import { getUserProfile, subscribeToAuthChanges } from './firebase/authService.js';
-import { EmailAuthProvider, reauthenticateWithCredential } from 'firebase/auth';
-import { auth } from './firebase/config.js';
+import { getProperties, getPropertyOccupiedNights } from './storage/storageService.js';
+import { getUserProfile, subscribeToAuthChanges, verifyUserPassword } from './storage/authService.js';
 import { calculateStayTotal, escapeHtml, getAvailabilityStatus, getLocalDateString, getOccupiedNightRanges, getStayNights, isPropertyAvailable } from './bookingUtils.mjs';
 import { printReservationConfirmation } from './bookingConfirmation.js';
 
@@ -33,8 +31,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       price: 8500, guests: 8, bedrooms: 4,
       description: 'A stunning sea-facing villa perched on the cliffs of Alibaug. Wake up to breathtaking ocean views, enjoy private beach access, and unwind in the infinity pool. Just 2 hours from Mumbai — your perfect coastal escape.',
       amenities: ['Pool', 'Beach Access', 'Sea View', 'WiFi', 'AC', 'Kitchen', 'Free Parking'],
-      images: ['../assets/images/stays/sea-view-villa.jpg'],
-      image: '../assets/images/stays/sea-view-villa.jpg',
+      images: ['../../assets/images/stays/sea-view-villa.jpg'],
+      image: '../../assets/images/stays/sea-view-villa.jpg',
       isPublic: true, isHardcoded: true, createdAt: '2026-01-10T00:00:00.000Z'
     },
     {
@@ -45,8 +43,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       price: 6200, guests: 6, bedrooms: 3,
       description: 'Step directly onto the famous white sands of Kashid from this beautiful beach house. Designed with local Konkan aesthetics and modern comforts — ideal for a family holiday or a friends getaway.',
       amenities: ['Beach Access', 'Sea View', 'WiFi', 'BBQ Grill', 'Free Parking', 'Hot Water'],
-      images: ['../assets/images/stay-types/beach-houses.jpg'],
-      image: '../assets/images/stay-types/beach-houses.jpg',
+      images: ['../../assets/images/stay-types/beach-houses.jpg'],
+      image: '../../assets/images/stay-types/beach-houses.jpg',
       isPublic: true, isHardcoded: true, createdAt: '2026-01-12T00:00:00.000Z'
     },
     {
@@ -57,8 +55,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       price: 4800, guests: 4, bedrooms: 2,
       description: 'A charming cottage nestled among coconut palms, 5 minutes from Tarkarli\'s pristine beach. Perfect for couples or a small family. Snorkeling and dolphin spotting tours available nearby.',
       amenities: ['Beach Access', 'WiFi', 'Kitchen', 'Sea View', 'Caretaker'],
-      images: ['../assets/images/stays/coastal-escape.jpg'],
-      image: '../assets/images/stays/coastal-escape.jpg',
+      images: ['../../assets/images/stays/coastal-escape.jpg'],
+      image: '../../assets/images/stays/coastal-escape.jpg',
       isPublic: true, isHardcoded: true, createdAt: '2026-01-15T00:00:00.000Z'
     },
     {
@@ -69,8 +67,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       price: 9800, guests: 14, bedrooms: 6,
       description: 'A sprawling farmhouse surrounded by mango orchards in lush Dapoli. Perfect for large family reunions, corporate retreats, or celebrations. Bonfire area, spacious lawns, and a fully equipped kitchen.',
       amenities: ['Kitchen', 'BBQ Grill', 'Free Parking', 'Pet Friendly', 'WiFi', 'Bonfire', 'Caretaker'],
-      images: ['../assets/images/stays/konkan-garden-retreat.jpg'],
-      image: '../assets/images/stays/konkan-garden-retreat.jpg',
+      images: ['../../assets/images/stays/konkan-garden-retreat.jpg'],
+      image: '../../assets/images/stays/konkan-garden-retreat.jpg',
       isPublic: true, isHardcoded: true, createdAt: '2026-01-18T00:00:00.000Z'
     },
     {
@@ -81,8 +79,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       price: 7200, guests: 10, bedrooms: 5,
       description: 'An elegant heritage villa with Indo-Portuguese architecture in the heart of Malvan. Minutes from Sindhudurg Fort, local fish markets, and the famous Malvan seafood cuisine. Authentic Konkan experience guaranteed.',
       amenities: ['Pool', 'AC', 'Kitchen', 'Free Parking', 'WiFi', 'Caretaker', 'Hot Water'],
-      images: ['../assets/images/stay-types/villas.jpg'],
-      image: '../assets/images/stay-types/villas.jpg',
+      images: ['../../assets/images/stay-types/villas.jpg'],
+      image: '../../assets/images/stay-types/villas.jpg',
       isPublic: true, isHardcoded: true, createdAt: '2026-01-20T00:00:00.000Z'
     },
     {
@@ -93,8 +91,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       price: 5500, guests: 6, bedrooms: 3,
       description: 'Wake up to iconic views of Janjira Fort from this beautifully restored colonial bungalow. Peaceful, spacious, and steeped in history — ideal for history lovers and beach enthusiasts alike.',
       amenities: ['Sea View', 'Beach Access', 'WiFi', 'Kitchen', 'Free Parking', 'Hot Water'],
-      images: ['../assets/images/stay-types/bunglows.jpg'],
-      image: '../assets/images/stay-types/bunglows.jpg',
+      images: ['../../assets/images/stay-types/bunglows.jpg'],
+      image: '../../assets/images/stay-types/bunglows.jpg',
       isPublic: true, isHardcoded: true, createdAt: '2026-01-22T00:00:00.000Z'
     }
   ];
@@ -111,25 +109,25 @@ document.addEventListener('DOMContentLoaded', async () => {
   const demoProperties = [
     {
       id: 'demo-coconut-grove-bungalow', title: 'Coconut Grove Bungalow', location: 'Alibaug', type: 'Bungalow',
-      price: 4200, guests: 5, images: ['../assets/images/stay-types/bunglows.jpg'],
+      price: 4200, guests: 5, images: ['../../assets/images/stay-types/bunglows.jpg'],
       description: 'A local sample bungalow for a small family or friends travelling together. Great for weekend getaways.',
       amenities: ['WiFi', 'Kitchen', 'Free Parking']
     },
     {
       id: 'demo-cove-for-two', title: 'Cove for Two Cottage', location: 'Kashid', type: 'Cottage',
-      price: 2800, guests: 2, images: ['../assets/images/stay-types/cottages.jpg'],
+      price: 2800, guests: 2, images: ['../../assets/images/stay-types/cottages.jpg'],
       description: 'An intimate cottage for two, right next to the sea. Ideal for romantic retreats and couples getaways.',
       amenities: ['WiFi', 'Beach Access', 'AC']
     },
     {
       id: 'demo-konkan-holiday-home', title: 'Konkan Holiday Home', location: 'Dapoli', type: 'Holiday Home',
-      price: 9200, guests: 12, images: ['../assets/images/stay-types/holiday-homes.jpg'],
+      price: 9200, guests: 12, images: ['../../assets/images/stay-types/holiday-homes.jpg'],
       description: 'A spacious holiday home with capacity for large groups. Perfect for family reunions and celebrations.',
       amenities: ['Pool', 'Kitchen', 'BBQ Grill', 'Free Parking']
     },
     {
       id: 'demo-kashid-coast-resort', title: 'Kashid Coast Resort Suite', location: 'Kashid', type: 'Resort',
-      price: 4700, guests: 3, images: ['../assets/images/destinations/kashid.jpg'],
+      price: 4700, guests: 3, images: ['../../assets/images/destinations/kashid.jpg'],
       description: 'A premium resort suite on Kashid\'s famous white sand beach. Includes daily breakfast and beach access.',
       amenities: ['Pool', 'AC', 'Beach Access']
     }
@@ -150,7 +148,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // ── Helpers ───────────────────────────────────────────────────────────────
   const img = (prop) =>
-    (prop.images?.[0] || prop.image || '../assets/images/destinations/alibaug.avif')
+    (prop.images?.[0] || prop.image || '../../assets/images/destinations/alibaug.avif')
       .replace(/^\.\.\//, '../');
 
   const amenityIcon = (a) => {
@@ -315,7 +313,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         aria-label="${escapeHtml(p.title)} in ${escapeHtml(p.location)}">
         <div class="prop-card-img-wrap">
           <img class="prop-card-img" src="${escapeHtml(img(p))}" alt="${escapeHtml(p.title)}" loading="lazy"
-            onerror="this.src='../assets/images/destinations/alibaug.avif'" />
+            onerror="this.src='../../assets/images/destinations/alibaug.avif'" />
           <span class="prop-card-badge">${escapeHtml(p.isDemo ? 'Demo listing' : p.isHardcoded ? ('🏠 ' + (p.type || 'KonkanStay')) : (p.type || 'Coastal Stay'))}</span>
           <button class="prop-card-wishlist" aria-label="Wishlist" data-wish="${p.id}">
             <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
@@ -813,9 +811,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       return;
     }
 
-    const firebaseUser = auth.currentUser;
-    if (!firebaseUser?.email) {
-      showBookAlert('Your Firebase sign-in session expired. Sign in again to continue.', 'error');
+    const signedInUser = currentUser;
+    if (!signedInUser?.email) {
+      showBookAlert('Your sign-in session expired. Sign in again to continue.', 'error');
       return;
     }
 
@@ -829,10 +827,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const verifyButton = event.currentTarget;
     verifyButton.disabled = true;
-    verifyButton.textContent = 'Verifying with Firebase…';
+    verifyButton.textContent = 'Verifying password…';
     try {
-      const credential = EmailAuthProvider.credential(firebaseUser.email, password);
-      await reauthenticateWithCredential(firebaseUser, credential);
+      await verifyUserPassword(signedInUser.email, password);
       if (!validateDemoHold()) return;
 
       const nights = getStayNights(currentDemoHold.checkin, currentDemoHold.checkout);
@@ -844,7 +841,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         propId: selectedProp.id,
         propTitle: selectedProp.title,
         propLocation: selectedProp.location,
-        customerUid: firebaseUser.uid,
+        customerUid: signedInUser.uid,
         customerName: document.getElementById('booking-username').value,
         checkin: currentDemoHold.checkin,
         checkout: currentDemoHold.checkout,
@@ -865,7 +862,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       document.getElementById('demo-confirmation-id').textContent = `Demo reference: ${booking.id}`;
       setBookingStep('confirmed');
     } catch (error) {
-      if (['auth/wrong-password', 'auth/invalid-credential', 'auth/invalid-login-credentials'].includes(error.code)) {
+      if (['auth/wrong-password', 'auth/invalid-credential', 'auth/invalid-login-credentials'].includes(error.code) || error.code?.includes('wrong-password')) {
         passwordFailures += 1;
         const remaining = 3 - passwordFailures;
         document.getElementById('booking-attempts').textContent = `Password attempts remaining: ${remaining}`;
@@ -875,11 +872,11 @@ document.addEventListener('DOMContentLoaded', async () => {
           setBookingStep('dates');
           showAvailability('Demo attempt cancelled after three incorrect passwords. The simulated payment was never charged; no refund is due.', 'error');
         } else {
-          showBookAlert(`Firebase could not verify that password. ${remaining} attempt${remaining === 1 ? '' : 's'} remaining.`, 'error');
+          showBookAlert(`Incorrect password. ${remaining} attempt${remaining === 1 ? '' : 's'} remaining.`, 'error');
         }
       } else {
-        console.error('[KonkanStay] Firebase reauthentication failed:', error);
-        showBookAlert('Firebase could not verify this account right now. No demo reservation was confirmed.', 'error');
+        console.error('[KonkanStay] Password verification failed:', error);
+        showBookAlert('Could not verify this account right now. No demo reservation was confirmed.', 'error');
       }
     } finally {
       verifyButton.disabled = false;

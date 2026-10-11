@@ -1,7 +1,8 @@
 // bookingWizard.js — 5-stage animated booking wizard
 // Stage 1: Booking details  Stage 2: Preview  Stage 3: Demo payment  Stage 4: Verify identity  Stage 5: Download PDF
 
-import { addBooking } from './firebase/firestoreService.js';
+import { addBooking } from './storage/storageService.js';
+import { verifyUserPassword } from './storage/authService.js';
 import { escapeHtml } from './bookingUtils.mjs';
 
 let _currentUser = null;
@@ -173,7 +174,7 @@ function buildStage2() {
     </div>
     <div class="bwiz-preview-card">
       <div class="bwiz-preview-prop">
-        <img src="${escapeHtml(p.image || '../assets/images/destinations/alibaug.avif')}" onerror="this.src='../assets/images/destinations/alibaug.avif'" alt="">
+        <img src="${escapeHtml(p.image || '../../assets/images/destinations/alibaug.avif')}" onerror="this.src='../../assets/images/destinations/alibaug.avif'" alt="">
         <div>
           <div class="bwiz-preview-prop-title">${escapeHtml(p.title)}</div>
           <div class="bwiz-preview-prop-loc">📍 ${escapeHtml(p.location)}, Konkan</div>
@@ -369,14 +370,12 @@ window.verifyAndBook = async function() {
 
   try {
     // Re-authenticate user to verify password
-    const { signInWithEmailAndPassword } = await import('firebase/auth');
-    const { auth } = await import('./firebase/config.js');
-    await signInWithEmailAndPassword(auth, _currentUser.email, password);
+    await verifyUserPassword(_currentUser.email, password);
 
     if (errEl) errEl.textContent = '';
     if (btn) { btn.textContent = 'Saving booking…'; }
 
-    // Save booking to Firestore
+    // Save booking to localStorage
     const bookingData = {
       propId: _currentProp.id,
       propTitle: _currentProp.title,

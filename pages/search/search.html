@@ -11,15 +11,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../../assets/css/style.css" />
-  <script type="importmap">
-    {
-      "imports": {
-        "firebase/app": "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js",
-        "firebase/auth": "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js",
-        "firebase/firestore": "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js"
-      }
-    }
-  </script>
   <style>
     /* ─── Page Base ─────────────────────────────────────────── */
     body { background: hsl(220,18%,9%); color: #e8eaf0; }
@@ -1086,22 +1077,22 @@
             <button type="button" class="btn-confirm" id="btn-check-availability">Check availability</button>
           </div>
           <section id="booking-payment-step" class="booking-step" hidden>
-            <h3 style="color:#fff;margin-bottom:.35rem;">booking payment</h3>
+            <h3 style="color:#fff;margin-bottom:.35rem;">Confirm Payment</h3>
             <p class="book-modal-prop">Choose a test method. No card or bank details are collected.</p>
             <div class="book-total-bar">
-              <span class="book-total-label" id="booking-payment-summary">Stay total</span>
-              <span class="book-total-amt" id="booking-payment-total">₹—</span>
+              <span class="book-total-label" id="demo-payment-summary">Stay total</span>
+              <span class="book-total-amt" id="demo-payment-total">₹—</span>
             </div>
-            <div class="booking-payment-choice" role="radiogroup" aria-label="booking payment method">
-              <label><input type="radio" name="booking-payment-method" value="UPI" checked /> UPI test</label>
-              <label><input type="radio" name="booking-payment-method" value="Card" /> Card test</label>
+            <div class="booking-payment-choice" role="radiogroup" aria-label="Payment method">
+              <label><input type="radio" name="demo-payment-method" value="UPI" checked /> UPI test</label>
+              <label><input type="radio" name="demo-payment-method" value="Card" /> Card test</label>
             </div>
-            <button type="button" class="btn-confirm" id="btn-booking-payment">Submit Payment</button>
-            <button type="button" class="btn-view" id="btn-booking-payment-fail" style="width:100%;margin-top:.6rem;">Cancel Payment</button>
+            <button type="button" class="btn-confirm" id="btn-demo-payment">Submit Payment</button>
+            <button type="button" class="btn-view" id="btn-demo-payment-fail" style="width:100%;margin-top:.6rem;">Cancel Payment</button>
           </section>
           <section id="booking-verify-step" class="booking-step" hidden>
             <h3 style="color:#fff;margin-bottom:.35rem;">Confirm it’s you</h3>
-            <p class="book-modal-prop">The username is from your profile. Firebase checks your password; KonkanStay does not store it.</p>
+            <p class="book-modal-prop">The username is from your profile. Enter your account password to verify and confirm your booking.</p>
             <div class="book-field">
               <label class="book-label" for="booking-username">Username</label>
               <input class="book-input" type="text" id="booking-username" readonly />
@@ -1115,16 +1106,16 @@
               <input class="book-input" type="text" id="booking-captcha-answer" inputmode="numeric" autocomplete="off" required />
             </div>
             <div id="booking-attempts" class="book-modal-prop" aria-live="polite">Password attempts remaining: 3</div>
-            <button type="button" class="btn-confirm" id="btn-verify-booking">Verify and confirm booking booking</button>
+            <button type="button" class="btn-confirm" id="btn-verify-booking">Verify and confirm booking</button>
           </section>
           <section id="booking-confirmed-step" class="booking-step" hidden>
             <div class="booking-success">
               <div class="booking-success-mark" aria-hidden="true">✓</div>
-              <h3>booking booking confirmed</h3>
-              <p>No payment was taken. This booking reservation is saved only in this browser.</p>
-              <span class="booking-confirmation-id" id="booking-confirmation-id"></span>
-              <button type="button" class="btn-confirm" id="btn-booking-confirmation-pdf">Print booking confirmation</button>
-              <button type="button" class="btn-view" id="btn-close-booking-confirmation" style="width:100%;margin-top:.6rem;">Done</button>
+              <h3>Booking confirmed!</h3>
+              <p>No payment was taken. This reservation is saved only in this browser.</p>
+              <span class="booking-confirmation-id" id="demo-confirmation-id"></span>
+              <button type="button" class="btn-confirm" id="btn-demo-confirmation-pdf">Print booking confirmation</button>
+              <button type="button" class="btn-view" id="btn-close-demo-confirmation" style="width:100%;margin-top:.6rem;">Done</button>
             </div>
           </section>
           <div id="book-alert" class="book-alert" role="alert"></div>

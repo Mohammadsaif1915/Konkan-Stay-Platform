@@ -1,4 +1,4 @@
-import { registerUser, loginUser, getUserProfile } from './firebase/authService.js';
+import { registerUser, loginUser, getUserProfile } from './storage/authService.js';
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -41,15 +41,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  function friendlyFirebaseError(code = '') {
+  function friendlyAuthError(code = '') {
     if (code.includes('email-already-in-use'))   return 'This email is already registered. Try logging in instead.';
-    if (code.includes('weak-password'))           return 'Password is too weak. Use at least 8 characters.';
-    if (code.includes('invalid-email'))           return 'Please enter a valid email address.';
-    if (code.includes('too-many-requests'))       return 'Too many attempts. Please wait a moment and try again.';
-    if (code.includes('user-not-found'))          return 'No account found with this email. Please register first.';
-    if (code.includes('wrong-password'))          return 'Incorrect password. Please try again.';
-    if (code.includes('invalid-credential'))      return 'Incorrect email or password. Please try again.';
-    if (code.includes('network'))                 return 'Network error. Check your connection and try again.';
+    if (code.includes('weak-password'))         return 'Password is too weak. Use at least 6 characters.';
+    if (code.includes('invalid-email'))         return 'Please enter a valid email address.';
+    if (code.includes('too-many-requests'))     return 'Too many attempts. Please wait a moment and try again.';
+    if (code.includes('user-not-found'))        return 'No account found with this email. Please register first.';
+    if (code.includes('wrong-password'))        return 'Incorrect password. Please try again.';
+    if (code.includes('invalid-credential'))    return 'Incorrect email or password. Please try again.';
     return null;
   }
 
@@ -59,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       const returnUrl = new URL(returnTo, window.location.href);
       if (returnUrl.origin !== window.location.origin
-        || !returnUrl.pathname.endsWith('/pages/search.html')) return null;
+        || !returnUrl.pathname.endsWith('/pages/search/search.html')) return null;
       return `${returnUrl.pathname}${returnUrl.search}${returnUrl.hash}`;
     } catch {
       return null;
@@ -85,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!/^[a-zA-Z0-9_]+$/.test(username)) { showToast('Username can only contain letters, numbers and underscores.'); return; }
       }
       if (!email)                           { showToast('Please enter your email address.'); return; }
-      if (password.length < 8)              { showToast('Password must be at least 8 characters.'); return; }
+      if (password.length < 6)              { showToast('Password must be at least 6 characters.'); return; }
       if (password !== confirmPassword)     { showToast('Passwords do not match!'); return; }
 
       // ── Build profile object ────────────────────────────────────────────────
@@ -114,10 +113,10 @@ document.addEventListener('DOMContentLoaded', () => {
       try {
         await registerUser(email, password, profile);
         showToast('🎉 Account created! Redirecting to login…', 'success');
-        setTimeout(() => { window.location.href = 'login.html'; }, 500);
+        setTimeout(() => { window.location.href = '../login/login.html'; }, 500);
       } catch (err) {
         console.error('[KonkanStay Register Error]', err);
-        const msg = friendlyFirebaseError(err.code) || err.message || 'Registration failed. Please try again.';
+        const msg = friendlyAuthError(err.code) || err.message || 'Registration failed. Please try again.';
         showToast(msg);
         if (btn) { btn.textContent = origText; btn.disabled = false; }
       }
@@ -142,21 +141,21 @@ document.addEventListener('DOMContentLoaded', () => {
       if (btn) { btn.textContent = 'Signing in…'; btn.disabled = true; }
 
       try {
-        const firebaseUser = await loginUser(email, password);
+        const loggedInUser = await loginUser(email, password);
         showToast('Signed in. Opening your account…', 'success');
 
         const profile = await Promise.race([
-          getUserProfile(firebaseUser.uid).catch(() => null),
+          getUserProfile(loggedInUser.uid).catch(() => null),
           new Promise(resolve => setTimeout(() => resolve(null), 1500))
         ]);
 
         const dest = getSafeBookingReturn()
-          || ((profile?.userType === 'host') ? 'dashboard-host.html' : 'dashboard-customer.html');
+          || ((profile?.userType === 'host') ? '../dashboard-host/dashboard-host.html' : '../dashboard-customer/dashboard-customer.html');
         window.location.assign(new URL(dest, window.location.href).href);
 
       } catch (err) {
         console.error('[KonkanStay Login Error]', err);
-        const msg = friendlyFirebaseError(err.code) || 'Incorrect email or password. Please try again.';
+        const msg = friendlyAuthError(err.code) || 'Incorrect email or password. Please try again.';
         showToast(msg);
         if (btn) { btn.textContent = origText; btn.disabled = false; }
       }
